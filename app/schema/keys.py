@@ -5,7 +5,7 @@
 - 문자열 하드코딩 대신 상수를 사용하여 오타 방지 및 가독성·유지보수성 향상.
 """
 from typing import Final
-from app.core.config import BACKEND_GPU_URL, BACKEND_VERSION
+from app.core.config import BACKEND_GPU_URL, BACKEND_GPU_VERSION
 
 
 
@@ -16,6 +16,17 @@ class LoginKey:
     ID: Final[str] = "id"
     PASSWD: Final[str] = "pwd"
     ROLE: Final[str] = "role"
+
+
+# Login 페이지의 View들을 관리하기 위한 객체
+class LoginViews:
+    """로그인 페이지의 View를 컨트롤하기 위한 키"""
+    KEY: Final[str] = "login_view"
+    LOGIN_BEFORE: Final[str] = "login_before"
+    SIGN_UP: Final[str] = "sign_up"
+    LOGIN_AFTER: Final[str] = "login_after"
+    EDIT: Final[str] = "edit"
+    SOFT_DELETE: Final[str] = "soft_delete"
 
 
 # Session 관리를 위한 Key들을 정리한 객체
@@ -43,7 +54,7 @@ class StreamLitChatKey:
 # API URL의 모음
 class APIKey:
     """백엔드 API 엔드포인트 URL."""
-    _BASE: Final[str] = f"{BACKEND_GPU_URL}/{BACKEND_VERSION}"
+    _BASE: Final[str] = f"{BACKEND_GPU_URL}/{BACKEND_GPU_VERSION}"
 
     # --- Base ---
     PING: Final[str] = f"{_BASE}/base/ping"
@@ -53,3 +64,5 @@ class APIKey:
     # --- Chat ---
     CHAT: Final[str] = f"{_BASE}/chat/web"
     CHAT_WITH_META: Final[str] = f"{_BASE}/chat/web_with_meta"
+
+

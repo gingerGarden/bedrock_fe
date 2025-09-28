@@ -7,10 +7,11 @@
 - 로그인 여부에 따라 BeforeLogin / AfterLogin UI를 렌더링.
 """
 import streamlit as st
-from app.schema.keys import SessionKey
+from app.schema.keys import SessionKey, LoginViews
 from app.utils.session import init_session
 from app.routes.common import basic_ui, InitModelInfo
-from app.routes.p1_login import BeforeLogin, AfterLogin
+from app.routes.p1_login_after import AfterLogin, Edit, SoftDelete
+from app.routes.p1_login_before import BeforeLogin, SignUp
 
 
 
@@ -30,22 +31,36 @@ InitModelInfo.run()
 # ---------------------------------------------------------
 # 3. 로그인 상태에 따른 UI 렌더링
 # ---------------------------------------------------------
-if not st.session_state[SessionKey.LOGGED_IN]:
-    # 로그인 전: ID/PW 입력 폼
-    BeforeLogin.UI()
+if st.session_state[SessionKey.LOGGED_IN]:
+    
+    # 로그인 후: 뷰 상태(login_after/edit)로 분기
+    view = st.session_state.setdefault(
+        LoginViews.KEY, LoginViews.LOGIN_AFTER
+    )
+
+    if view == LoginViews.LOGIN_AFTER:
+        # 로그인 후: 사용자 간단한 정보 + 기능 버튼
+        AfterLogin.UI()
+    elif view == LoginViews.EDIT:
+        # 회원 정보 수정
+        Edit.UI()
+    else:
+        # 회원 정지
+        SoftDelete.UI()
+
+        
+        
+
 else:
-    # 로그인 후: 사용자 정보 + 기능 버튼
-    AfterLogin.UI()
+    # 로그인 전: 뷰 상태(login_before/sign_up)로 분기
+    view = st.session_state.setdefault(
+        LoginViews.KEY, LoginViews.LOGIN_BEFORE
+    )
 
-    # -----------------------------------------------------
-    # 로그인 후 제공되는 버튼
-    # - Go to Chat: 채팅 페이지로 이동
-    # - Logout: 세션 초기화 후 로그인 상태 해제
-    # -----------------------------------------------------
-    col1, col2 = st.columns(2)
-    with col1:
-        AfterLogin.go_to_chat()
-
-    with col2:
-        AfterLogin.logout()
-
+    # session의 P1_LOGIN_VIEW_KEY에 따른 View 교체
+    if view == LoginViews.LOGIN_BEFORE:
+        # 로그인 이전
+        BeforeLogin.UI()
+    else:
+        # 회원 가입
+        SignUp.UI()
