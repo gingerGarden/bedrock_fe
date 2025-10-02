@@ -5,7 +5,6 @@
 - 문자열 하드코딩 대신 상수를 사용하여 오타 방지 및 가독성·유지보수성 향상.
 """
 from typing import Final
-from app.core.config import BACKEND_GPU_URL, BACKEND_GPU_VERSION
 
 
 
@@ -24,6 +23,7 @@ class LoginViews:
     KEY: Final[str] = "login_view"
     LOGIN_BEFORE: Final[str] = "login_before"
     SIGN_UP: Final[str] = "sign_up"
+    PERSONAL_INFO_AGREE: Final[str] = "p_info_agree"
     LOGIN_AFTER: Final[str] = "login_after"
     EDIT: Final[str] = "edit"
     SOFT_DELETE: Final[str] = "soft_delete"
@@ -34,7 +34,8 @@ class SessionKey:
     """Streamlit `st.session_state`에서 사용하는 키."""
     LOGGED_IN: Final[str] = "logged_in"         # 로그인 여부
     ID: Final[str] = "id"                       # 현재 로그인된 사용자 ID
-    ROLE: Final[str] = "role"                   # 현재 로그인된 사용자 권한
+    IS_DEVELOPER: Final[str] = "is_developer"   # 현재 로그인된 사용자 개발자 권한 여부
+    IS_ADMIN: Final[str] = "is_admin"           # 현재 로그인된 사용자 관리자 권한 여부
     
     MESSAGE: Final[str] = "message"             # 채팅 대화 기록
     STREAMING: Final[str] = "streaming"         # 현재 LLM 응답 스트리밍 진행 여부
@@ -51,18 +52,13 @@ class StreamLitChatKey:
     CONTENT: Final[str] = "content"
 
 
-# API URL의 모음
-class APIKey:
-    """백엔드 API 엔드포인트 URL."""
-    _BASE: Final[str] = f"{BACKEND_GPU_URL}/{BACKEND_GPU_VERSION}"
-
-    # --- Base ---
-    PING: Final[str] = f"{_BASE}/base/ping"
-    MODEL_LIST: Final[str] = f"{_BASE}/base/model_list"
-    DEFAULT_MODEL: Final[str] = f"{_BASE}/base/default_model"
-
-    # --- Chat ---
-    CHAT: Final[str] = f"{_BASE}/chat/web"
-    CHAT_WITH_META: Final[str] = f"{_BASE}/chat/web_with_meta"
-
-
+# Signup보조 세션 키
+class SignupKey:
+    # Session 내 중복 여부 승인 결과가 저장되는 키
+    USER_ID: Final[str] = "signup_user_id_verified"
+    KTR_ID: Final[str] = "signup_ktr_id_verified"
+    EMAIL: Final[str] = "signup_email_verified"
+    # 중복 여부에 대한 메시지가 저장되는 키
+    USER_ID_MSG: Final[str] = "signup_user_id_message"
+    KTR_ID_MSG: Final[str] = "signup_ktr_id_message"
+    EMAIL_MSG: Final[str] = "signup_email_message"

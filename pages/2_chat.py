@@ -6,7 +6,7 @@
 - 실제 채팅 UI는 app/routes/p2_chat.py의 Chat 클래스 사용.
 """
 import streamlit as st
-from app.schema.keys import SessionKey
+from app.constants.keys import SessionKey
 from app.utils.session import init_session
 from app.routes.common import GoLogin, basic_ui, InitModelInfo
 from app.routes.p2_chat import Chat

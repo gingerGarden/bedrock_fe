@@ -13,8 +13,8 @@ KHA-Frontend 메인 진입점(Entrypoint)
 import streamlit as st
 
 from app.utils.session import init_session
-from app.routes.main import explain_txt
 from app.routes.common import basic_ui, InitModelInfo
+from app.constants.messages import MAIN_INTRO
 
 
 
@@ -32,7 +32,7 @@ basic_ui()
 st.title("KHA에 오신 것을 환영합니다!")
 st.markdown("## (KHA: KTR Healthcare Assistant)")
 st.markdown("---")
-st.info(explain_txt)        # 서비스 소개 텍스트
+st.info(MAIN_INTRO)        # 서비스 소개 텍스트
 
 
 

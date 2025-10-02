@@ -7,9 +7,9 @@
 """
 import streamlit as st
 
-from app.schema.keys import SessionKey
+from app.constants.keys import SessionKey
 from app.routes.common import InitModelInfo
-from app.utils.chat import Response
+from app.utils.p2_chat import Response
 
 from kha.schema.keys import ChatRoles
 

@@ -5,8 +5,8 @@ Streamlit 세션 상태(`st.session_state`) 관리 유틸리티.
 - 이 모듈은 세션 상태를 안전하게 초기화하는 기능을 제공.
 """
 import streamlit as st
-from app.schema.keys import SessionKey
 
+from app.constants.keys import SessionKey
 
 
 
@@ -35,9 +35,12 @@ def _init_session_action():
     default = {
         SessionKey.LOGGED_IN: False,
         SessionKey.ID: None,
-        SessionKey.ROLE: None,
+        SessionKey.IS_DEVELOPER: None,
+        SessionKey.IS_ADMIN: None,
         SessionKey.MESSAGE: [],
         SessionKey.STREAMING: False
     }
     for key, value in default.items():
         st.session_state[key] = value
+
+

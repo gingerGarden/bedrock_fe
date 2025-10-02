@@ -15,7 +15,7 @@ from typing import List, Dict
 import streamlit as st
 import requests
 
-from app.schema.keys import APIKey
+from app.constants.api_urls import ChatAPIKeys
 
 from bedrock_core.data.sse import SSEConverter
 
@@ -28,7 +28,7 @@ def get_available_models() -> List[str]:
     백엔드에서 사용 가능한 모델 목록을 가져옵니다.
 
     동작:
-        - APIKey.MODEL_LIST 엔드포인트에 GET 요청을 전송합니다.
+        - ChatAPIKeys.MODEL_LIST 엔드포인트에 GET 요청을 전송합니다.
         - 응답을 10분간 캐싱하여 반복 호출 시 네트워크 부하를 줄입니다.
 
     예외 처리:
@@ -38,7 +38,7 @@ def get_available_models() -> List[str]:
         List[str]: 모델 이름 목록. 오류 발생 시 ["목록을 불러오지 못했습니다"] 반환.
     """
     try:
-        response = requests.get(APIKey.MODEL_LIST, timeout=5)
+        response = requests.get(ChatAPIKeys.MODEL_LIST, timeout=5)
         response.raise_for_status()     # 200 OK가 아니면 예외 발생
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -62,7 +62,7 @@ def get_default_model() -> str:
         str: 기본 모델명. 오류 발생 시 "" 반환.
     """
     try:
-        response = requests.get(APIKey.DEFAULT_MODEL, timeout=5)
+        response = requests.get(ChatAPIKeys.DEFAULT_MODEL, timeout=5)
         response.raise_for_status()     # 200 OK가 아니면 예외 발생
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -88,7 +88,7 @@ def streaming_response(payload: Dict[str, str]):
     """
     try:
         with requests.post(
-            APIKey.CHAT, 
+            ChatAPIKeys.CHAT, 
             json=payload, 
             stream=True,
             timeout=300         # 5분 타임아웃

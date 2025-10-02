@@ -6,7 +6,7 @@
 - 관리자 전용 기능은 추후 구현 예정.
 """
 import streamlit as st
-from app.schema.keys import SessionKey
+from app.constants.keys import SessionKey
 from app.utils.session import init_session
 from app.routes.common import GoLogin, basic_ui, InitModelInfo
 

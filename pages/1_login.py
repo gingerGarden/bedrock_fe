@@ -7,18 +7,18 @@
 - 로그인 여부에 따라 BeforeLogin / AfterLogin UI를 렌더링.
 """
 import streamlit as st
-from app.schema.keys import SessionKey, LoginViews
+from app.constants.keys import SessionKey, LoginViews
 from app.utils.session import init_session
 from app.routes.common import basic_ui, InitModelInfo
 from app.routes.p1_login_after import AfterLogin, Edit, SoftDelete
-from app.routes.p1_login_before import BeforeLogin, SignUp
+from app.routes.p1_login_before import BeforeLogin, SignUp, ShowPersonalInfoAgree
 
 
 
 # ---------------------------------------------------------
 # 1. 페이지 기본 설정
 # ---------------------------------------------------------
-basic_ui(title="Log-in")
+basic_ui(title="Login")
 
 
 # ---------------------------------------------------------
@@ -48,9 +48,6 @@ if st.session_state[SessionKey.LOGGED_IN]:
         # 회원 정지
         SoftDelete.UI()
 
-        
-        
-
 else:
     # 로그인 전: 뷰 상태(login_before/sign_up)로 분기
     view = st.session_state.setdefault(
@@ -61,6 +58,9 @@ else:
     if view == LoginViews.LOGIN_BEFORE:
         # 로그인 이전
         BeforeLogin.UI()
+    elif view == LoginViews.PERSONAL_INFO_AGREE:
+        # 개인정보수집 약관
+        ShowPersonalInfoAgree.UI()
     else:
         # 회원 가입
         SignUp.UI()

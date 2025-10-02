@@ -7,10 +7,9 @@ from typing import Dict
 
 import streamlit as st
 
-from app.core.api import streaming_response
-from app.schema.keys import (
-    SessionKey, StreamLitChatKey
-)
+from app.api.p2_chat import streaming_response
+from app.constants.keys import SessionKey, StreamLitChatKey
+
 from kha.schema.keys import ChatRoles
 
 

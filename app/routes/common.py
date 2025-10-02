@@ -11,9 +11,9 @@
 from typing import Optional
 
 import streamlit as st
-from app.schema.pathes import PagePath, KTR_ICON
-from app.schema.keys import SessionKey
-from app.core.api import get_available_models, get_default_model
+from app.api.p2_chat import get_available_models, get_default_model
+from app.constants.pathes import PagePath, KTR_ICON
+from app.constants.keys import SessionKey
 
 
 

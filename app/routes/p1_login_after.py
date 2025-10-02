@@ -6,10 +6,12 @@
 """
 import streamlit as st
 
-from app.schema.pathes import PagePath
-from app.schema.keys import SessionKey, LoginViews
-from app.schema.values import LOGIN_TXT_BAR_N_BTN_RATIO
+from app.constants.values import Ratio
+from app.constants.pathes import PagePath
+from app.constants.keys import SessionKey, LoginViews
+from app.constants.messages import SOFT_DELETE
 from app.utils.session import init_session
+from app.utils.p1_login import view_changer
 
 
 
@@ -27,10 +29,9 @@ class AfterLogin:
         with st.form("login_after_form"):
 
             _id = st.session_state[SessionKey.ID]
-            _role = st.session_state[SessionKey.ROLE]
 
             st.success(f"{_id}님 환영합니다!")
-            st.info(f"* 사용자: {_id}\n* 권한: {_role}")
+            st.info(f"* 사용자: {_id}\n* 권한: {cls._role_handler()}")
 
             # ------------- 필드 -------------
             chat_btn, logout_btn, edit_btn = cls._btns()
@@ -41,12 +42,20 @@ class AfterLogin:
 
         if logout_btn:
             init_session(force=True)
-            st.session_state[LoginViews.KEY] = LoginViews.LOGIN_BEFORE
-            st.rerun()
+            view_changer(LoginViews.LOGIN_BEFORE)
 
-        if edit_btn:
-            st.session_state[LoginViews.KEY] = LoginViews.EDIT
-            st.rerun()
+        if edit_btn: view_changer(LoginViews.EDIT)
+
+    @classmethod
+    def _role_handler(cls) -> str:
+
+        if st.session_state[SessionKey.IS_ADMIN]:
+            return "관리자"
+        
+        if st.session_state[SessionKey.IS_DEVELOPER]:
+            return "개발자"
+        
+        return "사용자"
 
     @classmethod
     def _btns(cls):
@@ -92,13 +101,9 @@ class Edit:
             submit, go_back, soft_delete = cls._action_btn_set()
 
         # ========== 이벤트 처리 ==========
-        if go_back:
-            st.session_state[LoginViews.KEY] = LoginViews.LOGIN_AFTER
-            st.rerun()
+        if go_back: view_changer(LoginViews.LOGIN_AFTER)
 
-        if soft_delete:
-            st.session_state[LoginViews.KEY] = LoginViews.SOFT_DELETE
-            st.rerun()
+        if soft_delete: view_changer(LoginViews.SOFT_DELETE)
 
     @classmethod
     def _no_modify_set(cls):
@@ -121,7 +126,7 @@ class Edit:
         """
         수정이 어려운 값 - 중복 확인 필요
         """
-        c1, c2 = st.columns(LOGIN_TXT_BAR_N_BTN_RATIO)
+        c1, c2 = st.columns(Ratio.LOGIN_BAR_N_BTN)
         with c1:
             email = st.text_input(
                 "E-mail", key="edit_email",
@@ -138,7 +143,6 @@ class Edit:
                 use_container_width=True
             )
         return email, email_checker
-
 
     @classmethod
     def _easy_modify_set(cls):
@@ -185,6 +189,7 @@ class Edit:
         return submit, go_back, soft_delete
     
 
+
 class SoftDelete:
 
     @classmethod
@@ -194,14 +199,7 @@ class SoftDelete:
             # 경고 화면
             _id = st.session_state[SessionKey.ID]
 
-            st.info(
-                f"""
-                {_id}님 계정 사용을 정지하도록 하겠습니까?
-
-                정지 시, 관리자 요청에 의해서만 계정 재사용이 가능합니다.
-
-                정말 정지하시겠습니까?
-                """)
+            st.info(SOFT_DELETE)
             
             # 비밀 번호 입력
             pwd_current = st.text_input(
@@ -211,9 +209,7 @@ class SoftDelete:
             # 버튼 모음
             back_btn, block_btn = cls._btns()
 
-        if back_btn:
-            st.session_state[LoginViews.KEY] = LoginViews.EDIT
-            st.rerun()
+        if back_btn: view_changer(LoginViews.EDIT)
 
     @classmethod
     def _btns(cls):
