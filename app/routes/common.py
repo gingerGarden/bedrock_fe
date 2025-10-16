@@ -14,6 +14,7 @@ import streamlit as st
 from app.api.p2_chat import get_available_models, get_default_model
 from app.constants.pathes import PagePath, KTR_ICON
 from app.constants.keys import SessionKey
+from app.constants.messages import NONE_LOGIN_USER
 
 
 
@@ -46,25 +47,24 @@ class GoLogin:
     로그인 필요 알림 및 로그인 페이지 이동 UI.
     """
     @classmethod
-    def UI(cls):
+    def UI(cls, title: Optional[str] = None):
         """로그인 안내 메시지와 이동 버튼 렌더링."""
+
+        if title is not None:
+            st.title(title)
+            st.markdown("---")
+
         st.error("로그인이 필요합니다!")
 
         with st.container():
-            st.info(
-                """
-                * KHA 사용을 위해선 log-in이 필요합니다
-                * KHA 알파 버전은 회원가입을 지원하지 않습니다
-                * 개발 단계이므로, 담당 개발자에게 계정 문의 바랍니다
-                """
-            )
+            st.info(NONE_LOGIN_USER)
 
         cls.go_to_login()
 
     @classmethod
     def go_to_login(cls):
         """'log-in page' 버튼 클릭 시 페이지 전환."""
-        if st.button("log-in page", use_container_width=True, type="primary"):
+        if st.button("로그인 페이지 이동", use_container_width=True, type="primary"):
             st.switch_page(PagePath.P1_LOGIN)
 
 

@@ -6,7 +6,7 @@ Streamlit 세션 상태(`st.session_state`) 관리 유틸리티.
 """
 import streamlit as st
 
-from app.constants.keys import SessionKey
+from app.constants.keys import SessionKey, LoginViews
 
 
 
@@ -33,14 +33,23 @@ def _init_session_action():
     - 모델 목록 등 초기 로딩 데이터는 별도 로직에서 유지.
     """
     default = {
+        # Login 관련 정보 초기화
         SessionKey.LOGGED_IN: False,
         SessionKey.ID: None,
+        SessionKey.USER_NAME: None,
+        SessionKey.KTR_ID: None,
+        SessionKey.EMAIL: None,
+
         SessionKey.IS_DEVELOPER: None,
         SessionKey.IS_ADMIN: None,
+
+        # 대화 내용 초기화
         SessionKey.MESSAGE: [],
-        SessionKey.STREAMING: False
+        SessionKey.STREAMING: False,
+
+        # View 초기화
+        LoginViews.KEY: LoginViews.LOGIN_BEFORE
+
     }
     for key, value in default.items():
         st.session_state[key] = value
-
-

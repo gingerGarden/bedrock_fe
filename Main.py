@@ -13,6 +13,7 @@ KHA-Frontend 메인 진입점(Entrypoint)
 import streamlit as st
 
 from app.utils.session import init_session
+from app.constants.keys import SessionKey, LoginViews
 from app.routes.common import basic_ui, InitModelInfo
 from app.constants.messages import MAIN_INTRO
 
@@ -29,7 +30,7 @@ basic_ui()
 # ---------------------------------------------------------
 # 메인 페이지 UI
 # ---------------------------------------------------------
-st.title("KHA에 오신 것을 환영합니다!")
+st.title("지능형 플랫폼 KHA")
 st.markdown("## (KHA: KTR Healthcare Assistant)")
 st.markdown("---")
 st.info(MAIN_INTRO)        # 서비스 소개 텍스트
@@ -42,3 +43,11 @@ st.info(MAIN_INTRO)        # 서비스 소개 텍스트
 # 모든 페이지에서 공통으로 사용할 세션 정보 및 모델 정보를 초기 로드합니다.
 init_session()          # 로그인 상태, 대화 기록 등 사용자 세션 초기화
 InitModelInfo.run()     # 백엔드에서 모델 목록 및 기본 모델명 불러오기
+
+# 로그인 상태에 따른 View 초기화
+if not st.session_state[SessionKey.LOGGED_IN]:
+    # 다른 페이지의 View 초기화
+    st.session_state[LoginViews.KEY] = LoginViews.LOGIN_BEFORE
+else:
+    # 다른 페이지의 View 초기화
+    st.session_state[LoginViews.KEY] = LoginViews.LOGIN_AFTER

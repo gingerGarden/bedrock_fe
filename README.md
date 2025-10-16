@@ -84,7 +84,7 @@ kha_frontend/
 # 3. 실행 방법
 * 기본 실행 방법
 ```bash
-streamlit run main.py
+streamlit run Main.py
 ```
 
 <br>
@@ -100,7 +100,7 @@ streamlit run main.py
 ### 3.1.1. 단계별 설정 방법
 #### A. Streamlit 웹서버 실행
 ```bash
-streamlit run main.py --server.address=0.0.0.0
+streamlit run Main.py --server.address=0.0.0.0
 ```
 * WSL 내부의 8501번 포트를 모든 IP 주소에 대해 개방
 
