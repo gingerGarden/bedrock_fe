@@ -19,7 +19,9 @@ import streamlit as st
 from app.api.p1_login import verify_login
 from app.constants.values import UserInfo, Ratio
 from app.constants.keys import SessionKey, LoginViews, SignupKey
-from app.constants.messages import LoginMsg, LoginSignupMsg, PERSONAL_INFO_AGREE
+from app.constants.messages import (
+    LoginMsg, LoginSignupMsg, PERSONAL_INFO_AGREE, LOST_PASSWORD
+)
 from app.schema.p1_login import UserLogin
 from app.utils.p1_login import view_changer, SignUpAction, SignUpUniqueKeys
 
@@ -53,7 +55,7 @@ class BeforeLogin:
         with st.form("login_form"):
 
             # ID/Password 입력 + 버튼 렌더링
-            _id, _pwd, login_btn, signup_btn = cls._id_pwd_set()
+            _id, _pwd, login_btn, signup_btn, lost_pwd_btn = cls._id_pwd_set()
 
         # ========== 이벤트 처리 ==========
         # 로그인 버튼 → 로그인 프로세스 실행
@@ -61,6 +63,9 @@ class BeforeLogin:
             
         # 회원가입 버튼 → 회원가입 화면으로 이동
         if signup_btn: view_changer(LoginViews.SIGN_UP)
+
+        # 비밀번호 분실 → 관리자 연락처 제공
+        if lost_pwd_btn: view_changer(LoginViews.LOST_PASSWORD)
 
     @classmethod
     def _id_pwd_set(
@@ -78,7 +83,7 @@ class BeforeLogin:
         _pwd = st.text_input("Password", type="password")
 
         # 로그인, 회원가입 버튼
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             login_btn = st.form_submit_button(
                 "로그인", 
@@ -90,8 +95,13 @@ class BeforeLogin:
                 "회원가입", 
                 use_container_width=True
             )
+        with col3:
+            lost_pwd_btn = st.form_submit_button(
+                "비밀번호 분실", 
+                use_container_width=True
+            )
         
-        return _id, _pwd, login_btn, signup_btn
+        return _id, _pwd, login_btn, signup_btn, lost_pwd_btn
 
     @classmethod
     def _login_action(cls, user_id: str, pwd: str):
@@ -471,3 +481,31 @@ class ShowPersonalInfoAgree:
         SignUpUniqueKeys.keys_rock_init()
 
         if back_btn: view_changer(LoginViews.SIGN_UP)
+
+
+
+class LostPassword:
+
+    @classmethod
+    def UI(cls):
+        
+        st.title("비밀번호 분실")
+        st.markdown("---")
+
+        st.error("KHA alpha 버전은 이메일 인증 기반 비밀번호 탐색을 제공하지 않습니다.")
+
+        with st.container():
+            st.info(LOST_PASSWORD)
+
+        # Main 페이지 이동
+        cls.go_to_back()
+
+
+    @classmethod
+    def go_to_back(cls):
+        if st.button(
+            "뒤로 가기",
+            use_container_width=True,
+            type="primary"
+        ):
+            view_changer(view_name=LoginViews.LOGIN_BEFORE)

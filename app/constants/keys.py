@@ -34,6 +34,7 @@ class SessionKey:
     # --- 로그인 상태/사용자 정보 ---
     LOGGED_IN: Final[str] = "logged_in"         # 로그인 여부(bool)
     ID: Final[str] = "id"                       # 현재 로그인된 사용자 ID
+    USER_IDX: Final[int] = "user_idx"           # 사용자 index(DB)
     USER_NAME: Final[str] = "user_name"         # 사용자 이름(별명)
     KTR_ID: Final[str] = "ktr_id"               # 사용자 사번
     EMAIL: Final[str] = "email"                 # 사용자 이메일
@@ -62,12 +63,35 @@ class LoginViews:
     현재 활성화된 화면을 구분한다.
     """
     KEY: Final[str] = "login_view"                          # 현재 뷰 상태 식별자
+
     LOGIN_BEFORE: Final[str] = "login_before"               # 로그인 전 화면
     SIGN_UP: Final[str] = "sign_up"                         # 회원가입 화면
     PERSONAL_INFO_AGREE: Final[str] = "p_info_agree"        # 개인정보 수집 동의 화면
+    LOST_PASSWORD: Final[str] = "lost_password"             # 비밀번호 분실 화면
+
     LOGIN_AFTER: Final[str] = "login_after"                 # 로그인 성공 후 화면
     EDIT: Final[str] = "edit"                               # 회원 정보 수정 화면
     SOFT_DELETE: Final[str] = "soft_delete"                 # 계정 사용 정지 화면
+
+
+
+# ============================================================
+# Admin 페이지 View 구분용 키
+# ============================================================
+class AdminViews:
+    KEY: Final[str] = "admin_view"
+
+    ALL: Final[str] = "f_all"
+    USER_ID: Final[str] = "f_user_id"
+    SIGNUP: Final[str] = "f_signup"
+    DEVELOPER: Final[str] = "f_developer"
+    BLOCK: Final[str] = "f_block"
+
+    TABLE_ALL: Final[str] = "t_all"
+    TABLE_USER_ID: Final[str] = "t_user_id"
+    TABLE_SIGNUP: Final[str] = "t_signup"
+    TABLE_DEVELOPER: Final[str] = "t_developer"
+    TABLE_BLOCK: Final[str] = "t_block"
 
 
 

@@ -18,7 +18,9 @@ from app.utils.session import init_session
 from app.utils.p1_login import SignUpUniqueKeys
 from app.routes.common import basic_ui, InitModelInfo
 from app.routes.p1_login_after import AfterLogin, Edit, SoftDelete
-from app.routes.p1_login_before import BeforeLogin, SignUp, ShowPersonalInfoAgree
+from app.routes.p1_login_before import (
+    BeforeLogin, SignUp, ShowPersonalInfoAgree, LostPassword
+)
 
 
 
@@ -81,6 +83,13 @@ else:
         # 개인정보 수집/이용 안내
         ShowPersonalInfoAgree.UI()
         # 안내 화면에서 이탈 시에도 중복키 상태는 초기화
+        SignUpUniqueKeys.keys_rock_init()
+
+
+    elif view == LoginViews.LOST_PASSWORD:
+        # 비밀번호 분실
+        LostPassword.UI()
+        # 정지 화면에서 돌아왔을 때도 중복키 잔상 없도록 초기화
         SignUpUniqueKeys.keys_rock_init()
 
     else:

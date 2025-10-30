@@ -63,6 +63,18 @@ class LoginAPIKeys:
 
 
 # ============================================================
+# 관리자 권한 관련 API URL
+# ============================================================
+class AdminAPIKeys:
+    _BASE: Final[str] = f"{BACKEND_WEB_URL}/{BACKEND_WEB_VERSION}/admin"
+
+    # --- 1. 조회 ---
+    GET_ALL_USERS: Final[str] = f"{_BASE}/search_all"
+
+
+
+
+# ============================================================
 # GPU 백엔드 (Chat / Model 관련) API URL
 # ============================================================
 class ChatAPIKeys:

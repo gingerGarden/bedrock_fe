@@ -64,7 +64,10 @@ class GoLogin:
     @classmethod
     def go_to_login(cls):
         """'log-in page' 버튼 클릭 시 페이지 전환."""
-        if st.button("로그인 페이지 이동", use_container_width=True, type="primary"):
+        if st.button(
+            "로그인(Login) 페이지 이동", 
+            use_container_width=True, type="primary"
+        ):
             st.switch_page(PagePath.P1_LOGIN)
 
 

@@ -10,6 +10,7 @@ from typing import Final
 # Page 경로 관리
 class PagePath:
     """페이지 파일 경로 (st.switch_page 등에서 사용)."""
+    P0_MAIN:Final[str] = "Main.py"
     P1_LOGIN: Final[str] = "pages/1_Login.py"
     P2_CHAT: Final[str] = "pages/2_KHA_chat.py"
     P3_FLORA_GENESIS: Final[str] = "pages/3_FloraGenesis.py"

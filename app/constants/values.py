@@ -8,7 +8,7 @@
 
 모든 상수는 직접 수정하지 않고, import 하여 참조만 하도록 한다.
 """
-from typing import Final, Tuple
+from typing import Final, Tuple, List, Dict
 
 
 
@@ -59,6 +59,92 @@ class UserUpdateInfo:
     """
     USER_NAME: Final[str] = "user_name"         # 변경된 사용자 이름
     EMAIL: Final[str] = "email"                 # 변경된 이메일
+
+
+# ============================================================
+# Admin - 사용자 조회 키 (Table 주요 속성)
+# ============================================================
+class UsersRecord:
+    """
+    Users Table로부터 사용자 정보 전달 시, Record의 키
+    """
+    user_id: Final[str] = "user_id"
+    ktr_id: Final[str] = "ktr_id"
+    user_name: Final[str] = "user_name"
+    email: Final[str] = "email"
+    developer: Final[str] = "developer"
+    admin: Final[str] = "admin"
+    signup: Final[str] = "signup"
+    idx: Final[str] = "idx"
+    created_at: Final[str] = "created_at"
+    updated_at: Final[str] = "updated_at"
+    signup_at: Final[str] = "signup_at"
+    deleted_at: Final[str] = "deleted_at"
+
+
+# ============================================================
+# Admin - Users Table 조회 고정 변수
+# ============================================================
+class AdminUserTable:
+
+    # ----------------- Time -----------------
+    # datetime 신규 컬럼명
+    # json으로 전달받은 문자형 datetime을 datetime으로 변환 시, 컬럼명
+    DT_ADD_COL: Final[str] = "{col}_df"
+    # datetime 컬럼과 현시점 간 차이에 대한 컬럼명
+    DT_INTERVAL_COL: Final[str] = "{col}_interval"
+
+    # datetime 컬럼명
+    DT_COLUMNS: List[str] = [
+        UsersRecord.created_at,
+        UsersRecord.updated_at,
+        UsersRecord.signup_at,
+        UsersRecord.deleted_at
+    ]
+
+    # 시간 컬럼 date만 표기할지 여부
+    DT_SHOW_ONLY_DATE: Final[bool] = True
+
+
+    # ----------------- Role -----------------
+    # Role 컬럼과 배정된 수치
+    ROLE_COL_DICT: Dict[str, int] = {
+        "user":0,
+        "developer":1, 
+        "admin":9
+    }
+
+    # Role 신규 컬럼명
+    # bool으로 표기된 role 컬럼을 정수로 변환하였을 때 컬럼명
+    ROLE_NUM_COL: Final[str] = "{col}_num"
+    # 정수 role 컬럼을 합친 정수 컬럼
+    ROLE_NUM_TOTAL_COL: Final[str] = "role_total"
+    # 합쳐진 정수 role(ROLE_NUM_TOTAL_COL)의 문자열 컬럼명(결과)
+    ROLE_STRING_COL: Final[str] = "role_string"
+
+
+    # ----------------- 최종 출력 -----------------
+    # 기본 컬럼 중 최종 출력에 포함될 값
+    RESULT_ORIGIN_COLUMNS: List[str] = [
+        "idx", "user_id", "ktr_id", "email", "signup"
+    ]
+    # 최종 출력에 idx를 제외할지 여부
+    RESULT_EXCLUDE_IDX: Final[bool] = False
+
+    # 최종 출력 시, 변수명을 어떻게 수정할지
+    RESULT_NEW_COLUMN_NAMES: Dict[str, str] = {
+        "idx":"idx", 
+        "user_id":"ID", 
+        "ktr_id":"사번",
+        "email":"이메일",
+        "signup":"승인여부",
+        "deleted_at_interval":"정지일수",
+        "role_string":"권한"
+    }
+    # sort 순서
+    RESULT_COLUMN_SORT: List[str] = ["권한", "승인여부", "정지일수", "idx"]
+    # 내림차순 오름차순
+    RESULT_COLUMN_SORT_ASCENDING: List[bool] = [True, True, False, True]
 
 
 # ============================================================

@@ -7,10 +7,9 @@
 """
 import streamlit as st
 from app.constants.keys import SessionKey, LoginViews
-from app.constants.messages import AdminMsg
 from app.utils.session import init_session
 from app.routes.common import GoLogin, basic_ui, InitModelInfo
-from app.routes.p7_admin import Main
+from app.routes.p7_admin import Main, NoAdmin
 
 
 
@@ -46,4 +45,5 @@ else:
         # UI 출력
         Main.UI()
     else:
-        st.error(AdminMsg.NO_ADMIN)
+        NoAdmin.UI()
+        

@@ -51,10 +51,12 @@ class AfterLogin:
             st.success(f'**"{_name}"님 환영합니다!**')
             st.info(
                 f"""
-                * **ID** : **{_id}**
-                * **사번** : **{_ktr_id}**
-                * **이메일** : **{_email}**
-                * **권한** : **{cls._role_handler()}**
+                ```markdown
+                - ID : {_id}
+                - 사번 : {_ktr_id}
+                - 이메일 : {_email}
+                - 권한 : {cls._role_handler()}
+                ```
                 """
             )
             # 동작 버튼(챗봇, 로그아웃, 회원정보 수정)

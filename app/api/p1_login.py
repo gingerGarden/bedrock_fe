@@ -15,12 +15,11 @@ Login API 연동 모듈.
 - Status200            : 2xx 응답 파서 모음(엔드포인트별 성공 페이로드 검증)
 """
 from typing import Dict, Optional, Union
-
 from requests import Response
 
 from app.constants.values import API_TIMEOUT, UserInfo, UserUpdateInfo
 from app.constants.api_urls import LoginAPIKeys
-from app.constants.keys import LoginKey
+from app.constants.keys import SessionKey
 from app.constants.messages import (
     LoginMsg, LoginSignupMsg, LoginSelfBlockMsg, LoginSelfUpdateMsg
 )
@@ -61,8 +60,8 @@ def verify_login(
     # API 통신
     return APIResponseHandler.run(
         url=LoginAPIKeys.VERIFY_ID,
-        payload=payload,
         func_200=Status200.verify_login,
+        payload=payload,
         timeout=API_TIMEOUT
     )
 
@@ -101,8 +100,8 @@ def verify_unique_key(
     # API 통신
     return APIResponseHandler.run(
         url=LoginAPIKeys.VERIFY_UNIQUE_KEY,
-        payload=payload,
         func_200=Status200.verify_unique_key,
+        payload=payload,
         timeout=API_TIMEOUT
     )
 
@@ -158,8 +157,8 @@ def add_new_user(
     }
     return APIResponseHandler.run(
         url=LoginAPIKeys.ADD_USER,
-        payload=payload,
         func_200=Status200.add_new_user,
+        payload=payload,
         timeout=API_TIMEOUT
     )
 
@@ -193,8 +192,8 @@ def self_block(
     # API 통신
     return APIResponseHandler.run(
         url=LoginAPIKeys.SELF_BLOCK,
-        payload=payload,
         func_200=Status200.self_block,
+        payload=payload,
         timeout=API_TIMEOUT
     )
 
@@ -241,8 +240,8 @@ def self_update(
     # API 통신
     return APIResponseHandler.run(
         url=LoginAPIKeys.SELF_UPDATE,
-        payload=payload,
         func_200=Status200.self_update,
+        payload=payload,
         timeout=API_TIMEOUT
     )
 
@@ -341,7 +340,7 @@ class Status200:
 
         성공 시
         -------
-        (True, LoginSignupMsg.SUCCESS_ADD, {LoginKey.USER_IDX:<int>})    # idx 반환 가능하나, 별도 사용처가 없어서 하지 않음
+        (True, LoginSignupMsg.SUCCESS_ADD, {SessionKey.USER_IDX:<int>})    # idx 반환 가능하나, 별도 사용처가 없어서 하지 않음
 
         실패 시
         -------
@@ -361,7 +360,7 @@ class Status200:
             if not isinstance(idx, int):
                 return None, LoginSignupMsg.FAIL_UNKNOWN, None
             
-            return True, LoginSignupMsg.SUCCESS_ADD, {LoginKey.USER_IDX:idx}
+            return True, LoginSignupMsg.SUCCESS_ADD, {SessionKey.USER_IDX:idx}
         
         return False, LoginSignupMsg.FAIL_UNKNOWN, None
     
@@ -372,7 +371,7 @@ class Status200:
 
         성공 시
         -------
-        (True, LoginSelfBlockMsg.SUCCESS, {LoginKey.USER_IDX:<int>})
+        (True, LoginSelfBlockMsg.SUCCESS, {SessionKey.USER_IDX:<int>})
 
         실패 시
         -------
@@ -387,7 +386,7 @@ class Status200:
         # 정상 출력 시 분기
         if data.get("ok") is True:
             idx: int = data.get("idx")
-            return True, LoginSelfBlockMsg.SUCCESS, {LoginKey.USER_IDX:idx}
+            return True, LoginSelfBlockMsg.SUCCESS, {SessionKey.USER_IDX:idx}
         
         # ok 필드가 False거나 없음 → 예상치 못한 응답 형식
         return False, LoginSelfBlockMsg.FAIL_UNKNOWN, None
