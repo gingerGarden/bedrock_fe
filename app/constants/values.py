@@ -9,77 +9,55 @@
 모든 상수는 직접 수정하지 않고, import 하여 참조만 하도록 한다.
 """
 from typing import Final, Tuple, List, Dict
+from app.constants.keys import UsersRecord
 
 
 
 # ============================================================
-# API 공통 설정
+# 주요 공통 설정
 # ============================================================
-API_TIMEOUT = (
-    3.0,    # Connect timeout (서버 연결 대기 시간)
-    5.0     # Read timeout (응답 수신 대기 시간)
-)
-"""
-API 통신 기본 타임아웃 설정.
+class FixValues:
 
-구조
-----
-(API 연결 대기 시간, 응답 수신 대기 시간)
-
-용도
-----
-`requests` 라이브러리의 `timeout` 인자로 전달되어,
-서버 지연이나 무한 대기를 방지한다.
-예: `requests.post(url, timeout=API_TIMEOUT)`
-"""
+    # 기본 비밀번호 - 관리자 비밀번호 수정 시
+    DEFAULT_PASSWORD: Final[str] = "1a2b3c4d5e6f"
+    # API 통신 기본 타임아웃 설정
+    API_TIMEOUT: Tuple[float, float] = (
+        3.0,    # Connect timeout (서버 연결 대기 시간)
+        5.0     # Read timeout (응답 수신 대기 시간)
+    )
+    # Flash life
+    FLASH_LIFE: Final[int] = 2
+    """
+    Flash로 별도 출력하는 로그가 재렌더링 과정을 몇 번까지 버틸지 내부에서 st.rerun()으로 렌더링 되는 절차를 이야기함
+    새로운 데이터가 flash에 입력 시, 초기화 됨
+    """
 
 
 # ============================================================
-# 사용자 정보 키
+# UI 비율 / 화면 구성용 상수
 # ============================================================
-class UserInfo:
+class Ratio:
     """
-    로그인 성공 시 백엔드로부터 전달받는 사용자 정보 딕셔너리의 키 모음.
-
-    각 값은 SessionState 또는 API 파서(`Status200.verify_login`)에서도 동일하게 사용된다.
+    Streamlit 페이지 구성 시 컬럼 비율 등 UI 관련 상수 모음.
     """
-    USER_NAME: Final[str] = "user_name"         # 사용자 표시명 (닉네임)
-    KTR_ID: Final[str] = "ktr_id"               # 기관 사번
-    EMAIL: Final[str] = "email"                 # 이메일 주소
-    DEVELOPER: Final[str] = "developer"         # 개발자 계정 여부 (bool)
-    ADMIN: Final[str] = "admin"                 # 관리자 계정 여부 (bool)
-
-
-class UserUpdateInfo:
+    # 로그인 View에서 text_bar, btn의 크기 비율
+    LOGIN_BAR_N_BTN: Final[Tuple[int, int]] = [3, 1]
     """
-    사용자 정보 수정 API(`/self_update`) 응답에서 사용하는 키 모음.
+    로그인/회원가입 View에서
+    - 입력창(text_input)
+    - 버튼(submit_button)
+    의 가로 비율을 지정한다.
 
-    변경 가능한 필드만 정의되어 있으며,
-    업데이트 후 UI에 반영되는 최소 필드를 지정한다.
+    예시
+    ----
+    ```python
+    col1, col2 = st.columns(Ratio.LOGIN_BAR_N_BTN)
+    ```
+    → 입력창:버튼 = 3:1
     """
-    USER_NAME: Final[str] = "user_name"         # 변경된 사용자 이름
-    EMAIL: Final[str] = "email"                 # 변경된 이메일
+    # Admin Table 크기
+    ADMIN_TABLE_SIZE: int = 650
 
-
-# ============================================================
-# Admin - 사용자 조회 키 (Table 주요 속성)
-# ============================================================
-class UsersRecord:
-    """
-    Users Table로부터 사용자 정보 전달 시, Record의 키
-    """
-    user_id: Final[str] = "user_id"
-    ktr_id: Final[str] = "ktr_id"
-    user_name: Final[str] = "user_name"
-    email: Final[str] = "email"
-    developer: Final[str] = "developer"
-    admin: Final[str] = "admin"
-    signup: Final[str] = "signup"
-    idx: Final[str] = "idx"
-    created_at: Final[str] = "created_at"
-    updated_at: Final[str] = "updated_at"
-    signup_at: Final[str] = "signup_at"
-    deleted_at: Final[str] = "deleted_at"
 
 
 # ============================================================
@@ -128,9 +106,6 @@ class AdminUserTable:
     RESULT_ORIGIN_COLUMNS: List[str] = [
         "idx", "user_id", "ktr_id", "email", "signup"
     ]
-    # 최종 출력에 idx를 제외할지 여부
-    RESULT_EXCLUDE_IDX: Final[bool] = False
-
     # 최종 출력 시, 변수명을 어떻게 수정할지
     RESULT_NEW_COLUMN_NAMES: Dict[str, str] = {
         "idx":"idx", 
@@ -138,34 +113,21 @@ class AdminUserTable:
         "ktr_id":"사번",
         "email":"이메일",
         "signup":"승인여부",
-        "deleted_at_interval":"정지일수",
+        DT_INTERVAL_COL.format(col="signup_at"):"승인일수",
+        DT_INTERVAL_COL.format(col="deleted_at"):"정지일수",
         "role_string":"권한"
     }
+    
     # sort 순서
     RESULT_COLUMN_SORT: List[str] = ["권한", "승인여부", "정지일수", "idx"]
     # 내림차순 오름차순
     RESULT_COLUMN_SORT_ASCENDING: List[bool] = [True, True, False, True]
+    # index 표기 여부
+    SHOW_FE_IDX: bool = True
+    # 결측값 string - FE에서 실수열의 렌더링 오류 방지를 위해 string으로 전환 - 결측값의 문자열 리스트 - 필터를 위한
+    STRING_NA: List[str] = ["", "nan", "NaN", "None", "NaT"]
 
 
-# ============================================================
-# UI 비율 / 화면 구성용 상수
-# ============================================================
-class Ratio:
-    """
-    Streamlit 페이지 구성 시 컬럼 비율 등 UI 관련 상수 모음.
-    """
-    # 로그인 View에서 text_bar, btn의 크기 비율
-    LOGIN_BAR_N_BTN: Final[Tuple[int, int]] = [3, 1]
-    """
-    로그인/회원가입 View에서
-    - 입력창(text_input)
-    - 버튼(submit_button)
-    의 가로 비율을 지정한다.
 
-    예시
-    ----
-    ```python
-    col1, col2 = st.columns(Ratio.LOGIN_BAR_N_BTN)
-    ```
-    → 입력창:버튼 = 3:1
-    """
+
+

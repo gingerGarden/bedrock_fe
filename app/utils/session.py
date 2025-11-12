@@ -27,6 +27,7 @@ def init_session(force: bool = False):
         _init_session_action()
 
 
+
 def _init_session_action():
     """
     세션 기본값 설정.

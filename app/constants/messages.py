@@ -87,7 +87,7 @@ class LoginSignupMsg:
     # --- 입력 패턴 안내 ---
     USER_ID_PAT: Final[str] = "영문/숫자/특수문자(-_) 조합 (4~20자)"
     PWD_PAT: Final[str] = "영문/숫자/특수문자(공백 제외)만 허용 (12~64자)"
-    USER_NAME_PAT: Final[str] = "한글/영문/특수문자(-_) (2~20자)"
+    USER_NAME_PAT: Final[str] = "한글/영문/특수문자(-_()) (2~20자)"
 
     # --- 약관/동의 ---
     PERSONAL_INFO_NOT_AGREE: Final[str] = "개인정보 수집 미동의 시, 회원가입이 제한됩니다."
@@ -132,17 +132,65 @@ class AdminMsg:
     # --- 공통 ---
     PARSING_JSON_FAIL: Final[str] = "[조회 실패] 응답 JSON 파싱 실패."
     FAIL_UNKNOWN: Final[str] = "[조회 실패] 예상치 못한 응답 형식."
+    # 조작 취소
+    CANCEL_MODIFY: Final[str] = "[조작 취소] 조작을 취소했습니다."
 
     # --- 성공 ---
     GET_RECORDS: Final[str] = "[조회 성공] 대상 레코드 반환"
-
     # 데이터가 없음
     GET_BUT_NO_DATA: Final[str] = "[조회 성공] Table이 비어있음"
+    # 다수 대상 조작 성공
+    BULK_SUCCESS: Final[str] = "[조작 성공] / 기능: {key} / 방향: {way} / 대상:{target} / 적용: {done} / 미적용: {no_work}"
 
+    # --- 실패 ---
     # 전처리 실패
     DATA_HANDLING_FAIL: Final[str] = "[전처리 실패] {e}"
+    # 다수 대상 조작 실패
+    BULK_FAIL: Final[str] = "[조작 실패] / 기능: {key} / 방향: {way} / 대상:{target} / 과다적용: {over_work}"
+    
+    # --- idx 오류로 인한 실패 ---
+    # 데이터(index) 미입력
+    NO_IDX_ENTER: Final[str] = "[입력 확인] 데이터 조작할 대상이 선택되지 않았습니다."
+    # 데이터(index) 과다 입력
+    TOO_MUCH_IDX_ENTER: Final[str] = "[입력 확인] 대상을 하나만 선택하십시오."
+    # 관리자 수정 방어
+    DEFENCE_ADMIN_MODIFY: Final[str] = "[조작 실패] 관리자 계정이 포함되었습니다. 관리자 계정은 해당 페이지에서 수정이 불가합니다."
+    # Soft-deleted가 안된 유저를 Hard-delete 하는 경우
+    NOT_BLOCKED_USER_DELETE: Final[str] = "[조작 실패] 정지되지 않은 계정의 삭제를 시도했습니다. 삭제는 반드시 정지된 계정만 가능합니다."
+    # 정수 변환이 안되는 index 입력 시
+    WEIRD_IDX_ENTER: Final[str] = "[입력 확인] idx에 정수 변환이 불가능한 값이 입력되었습니다."
+
+    # --- 비밀번호 ---
+    # 문자열이 아닌 값이 입력
+    WEIRD_PWD_ENTER: Final[str] = "[입력 확인] 신규 비밀번호에 문자열이 아닌 값이 입력됐습니다."
+    # 미입력
+    NOT_ENTER_PWD: Final[str] = "[입력 확인] 신규 비밀번호를 입력하지 않았습니다."
+    # 잘못된 형식의 비밀번호 입력
+    WRONG_FORMAT_PWD: Final[str] = "[입력 확인] 잘못된 형식의 신규 비밀번호를 입력했습니다."
+
 
     
+class AdminBtns:
+
+    # --- 1. 조회 ---
+    DB_SEARCH: Final[str] = "백엔드의 Users table을 조회하여, 관리자 페이지에서 필요로하는 모든 사용자의 정보를 가져옵니다. (사용자 규모가 커지면 추후 변경 예정)"
+    SIGNUP_FILTER: Final[str] = '"DB 조회"를 통해 조회된 유저 중, 승인 대기 중인 사용자의 행만 조회합니다.'
+    DEVELOPER_FILTER: Final[str] = '"DB 조회"를 통해 조회된 유저 중, 권한이 개발자인 사용자의 행만 조회합니다.'
+    ALL_FILTER: Final[str] = '"DB 조회"를 통해 조회된 전체 유저들을 반환합니다.'
+    BLOCK_FILTER: Final[str] = '"DB 조회"를 통해 조회된 유저 중, 정지된(Soft-delete) 사용자의 행만 조회합니다.'
+    ID_FILTER: Final[str] = '"DB 조회"를 통해 조회된 유저 중, "ID"에 입력된 유저의 계정이 있는 행을 조회합니다(일치).'
+
+
+    # --- 2. 조작 ---
+    SIGNUP_TRUE: Final[str] = "선택된 계정들의 플랫폼 사용을 승인합니다. 승인 시점(signup_at)이 자동 갱신됩니다."
+    SIGNUP_FALSE: Final[str] = "선택된 계정들의 플랫폼 사용 승인을 해제합니다. 승인 시점(signup_at)이 None으로 갱신됩니다."
+
+    BLOCK_TRUE: Final[str] = "선택된 계정들을 정지(Soft-delete)합니다. 정지 시점(deleted_at)이 자동 갱신됩니다."
+    BLOCK_FALSE: Final[str] = "선택된 계정들의 정지(Soft-delete)를 해제합니다. 정지 시점(deleted_at)이 None으로 갱신됩니다."
+
+    DELETE: Final[str] = "이미 정지되어 있는 계정 중 선택된 계정들을 영구 삭제합니다. 되돌릴 수 없습니다(config에서 비활성화 가능)."
+
+    PASSWORD_CONVERT: Final[str] = "선택된 계정(하나)의 비밀번호를 강제로 변경합니다."
 
 
 

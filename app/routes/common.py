@@ -18,7 +18,10 @@ from app.constants.messages import NONE_LOGIN_USER
 
 
 
-def basic_ui(title: Optional[str] = None):
+def basic_ui(
+        title: Optional[str] = None,
+        wide: bool = False
+    ):
     """
     페이지 공통 UI 설정 적용.
 
@@ -28,10 +31,12 @@ def basic_ui(title: Optional[str] = None):
     Args:
         title (str, optional): 페이지 타이틀. 지정 시 페이지 상단에 표시.
     """
+    _layout = "wide" if wide else "centered"
+
     st.set_page_config(
         page_title="KHA alpha",             # 브라우저 탭 제목
         page_icon=KTR_ICON,                 # 페이지 아이콘
-        layout="centered",                  # 화면 레이아웃 (가운데 정렬)
+        layout=_layout,                     # 화면 레이아웃 (가운데 정렬)
         initial_sidebar_state="expanded"    # 실행 시 사이드바 기본 상태 (펼쳐짐)
     )
 

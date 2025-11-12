@@ -71,6 +71,16 @@ class AdminAPIKeys:
     # --- 1. 조회 ---
     GET_ALL_USERS: Final[str] = f"{_BASE}/search_all"
 
+    # --- 2. 다수 이용자 변경 ---
+    # 승인/승인해제
+    BULK_SIGNUP: Final[str] = f"{_BASE}/signup"
+    # 정지/복원
+    BULK_BLOCK: Final[str] = f"{_BASE}/block"
+    # 완전 삭제
+    BULK_DELETE: Final[str] = f"{_BASE}/delete"
+
+    # --- 3. 단일 이용자 비밀번호 변경 ---
+    SINGLE_RESET_PWD: Final[str] = f"{_BASE}/reset_pwd"
 
 
 

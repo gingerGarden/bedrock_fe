@@ -16,12 +16,13 @@ from pydantic import BaseModel, EmailStr
 from app.api.p1_login import (
     verify_unique_key, add_new_user, self_block, self_update
 )
-from app.constants.keys import SignupKey, LoginViews, SessionKey
-from app.constants.values import UserUpdateInfo
+from app.constants.keys import (
+    SignupKey, LoginViews, SessionKey, UserUpdateInfo
+)
 from app.constants.messages import (
     LoginSignupMsg, LoginSelfBlockMsg, LoginSelfUpdateMsg
 )
-from app.schema.p1_login import UniqueKeys, Password, UserName
+from app.schemas.p1_login import UniqueKeys, Password, UserName
 from app.utils.session import init_session
 from app.utils.utils import string_space_converter
 
@@ -518,6 +519,9 @@ class EditAction:
         3) BE(self_update) 호출
         4) 성공 시 메시지 출력/세션 반영/락 초기화
         """
+        # 0) user_name 정규화
+        user_name = string_space_converter(value=user_name)
+
         # 1) 현재 비밀번호 인증
         mask, msg = cls._pwd_current_check(pwd_current)
         if mask:
@@ -587,9 +591,6 @@ class EditAction:
         """
         수정 요청 값들의 유효성 검증(모두 빈값, 이메일, 비밀번호 규칙).
         """
-        # 0) user_name 정규화
-        user_name = string_space_converter(value=user_name)
-
         # 1) 모두 미입력 여부
         mask, msg = cls._check_all_null(
             user_name=user_name,

@@ -50,6 +50,58 @@ class SessionKey:
     MODEL: Final[str] = "model"                 # 현재 선택된 모델 이름
     MODEL_IDX: Final[str] = "model_number"      # 모델 목록에서 선택된 인덱스
 
+    
+# Flash 사용을 위한 키
+class FlashKeys:
+    # admin 페이지의 Table 조작 로그가 출력되는 Flash
+    ADMIN_TABLE: Final[str] = "flash_admin_table_box"
+
+
+# ============================================================
+# 사용자 정보 키
+# ============================================================
+class UserInfo:
+    """
+    로그인 성공 시 백엔드로부터 전달받는 사용자 정보 딕셔너리의 키 모음.
+
+    각 값은 SessionState 또는 API 파서(`Status200.verify_login`)에서도 동일하게 사용된다.
+    """
+    USER_NAME: Final[str] = "user_name"         # 사용자 표시명 (닉네임)
+    KTR_ID: Final[str] = "ktr_id"               # 기관 사번
+    EMAIL: Final[str] = "email"                 # 이메일 주소
+    DEVELOPER: Final[str] = "developer"         # 개발자 계정 여부 (bool)
+    ADMIN: Final[str] = "admin"                 # 관리자 계정 여부 (bool)
+
+
+class UserUpdateInfo:
+    """
+    사용자 정보 수정 API(`/self_update`) 응답에서 사용하는 키 모음.
+
+    변경 가능한 필드만 정의되어 있으며,
+    업데이트 후 UI에 반영되는 최소 필드를 지정한다.
+    """
+    USER_NAME: Final[str] = "user_name"         # 변경된 사용자 이름
+    EMAIL: Final[str] = "email"                 # 변경된 이메일
+
+
+# Admin - 사용자 조회 키 (Table 주요 속성)
+class UsersRecord:
+    """
+    Users Table로부터 사용자 정보 전달 시, Record의 키
+    """
+    user_id: Final[str] = "user_id"
+    ktr_id: Final[str] = "ktr_id"
+    user_name: Final[str] = "user_name"
+    email: Final[str] = "email"
+    developer: Final[str] = "developer"
+    admin: Final[str] = "admin"
+    signup: Final[str] = "signup"
+    idx: Final[str] = "idx"
+    created_at: Final[str] = "created_at"
+    updated_at: Final[str] = "updated_at"
+    signup_at: Final[str] = "signup_at"
+    deleted_at: Final[str] = "deleted_at"
+
 
 
 # ============================================================
@@ -76,40 +128,6 @@ class LoginViews:
 
 
 # ============================================================
-# Admin 페이지 View 구분용 키
-# ============================================================
-class AdminViews:
-    KEY: Final[str] = "admin_view"
-
-    ALL: Final[str] = "f_all"
-    USER_ID: Final[str] = "f_user_id"
-    SIGNUP: Final[str] = "f_signup"
-    DEVELOPER: Final[str] = "f_developer"
-    BLOCK: Final[str] = "f_block"
-
-    TABLE_ALL: Final[str] = "t_all"
-    TABLE_USER_ID: Final[str] = "t_user_id"
-    TABLE_SIGNUP: Final[str] = "t_signup"
-    TABLE_DEVELOPER: Final[str] = "t_developer"
-    TABLE_BLOCK: Final[str] = "t_block"
-
-
-
-# ============================================================
-# Streamlit Chat 위젯용 키
-# ============================================================
-class StreamLitChatKey:
-    """
-    Streamlit의 `st.chat_message` 컴포넌트에서 사용하는 키.
-
-    채팅 메시지 객체의 기본 구조를 정의한다.
-    """
-    ROLE: Final[str] = "role"               # 발신자 역할 (user/assistant/system)
-    CONTENT: Final[str] = "content"         # 메시지 본문 텍스트
-
-
-
-# ============================================================
 # 회원가입 관련 세션 키 (중복검사 및 메시지 관리)
 # ============================================================
 class SignupKey:
@@ -128,3 +146,44 @@ class SignupKey:
     USER_ID_MSG: Final[str] = "signup_user_id_message"      # user_id 결과 메시지
     KTR_ID_MSG: Final[str] = "signup_ktr_id_message"        # ktr_id 결과 메시지
     EMAIL_MSG: Final[str] = "signup_email_message"          # email 결과 메시지
+
+
+
+# ============================================================
+# Admin 페이지 View 구분용 키
+# ============================================================
+class AdminViews:
+    KEY: Final[str] = "admin_view"
+
+    ALL: Final[str] = "f_all"
+    USER_ID: Final[str] = "f_user_id"
+    SIGNUP: Final[str] = "f_signup"
+    DEVELOPER: Final[str] = "f_developer"
+    BLOCK: Final[str] = "f_block"
+
+    TABLE_ALL: Final[str] = "t_all"
+    TABLE_USER_ID: Final[str] = "t_user_id"
+    TABLE_SIGNUP: Final[str] = "t_signup"
+    TABLE_DEVELOPER: Final[str] = "t_developer"
+    TABLE_BLOCK: Final[str] = "t_block"
+
+
+class AdminUserModify:
+    INDEX_LIST: Final[str] = "admin_selected_idxes"         # Admin Table에서 선택된 index를 담는 list
+    ADMIN_IDX_LIST: Final[str] = "admin_admin_idxes"        # Admin Table에서 Admin인 유저들의 index를 담는 list
+    BLOCK_IDX_LIST: Final[str] = "admin_block_idxes"        # Admin Table에서 Block(Soft-delete)인 유저들의 index를 담는 list
+
+    DELETE_WAIT: Final[str] = "admin_delete_wait"           # Admin Table에서 dialog에서 중복 입력 방어
+
+
+# ============================================================
+# Streamlit Chat 위젯용 키
+# ============================================================
+class StreamLitChatKey:
+    """
+    Streamlit의 `st.chat_message` 컴포넌트에서 사용하는 키.
+
+    채팅 메시지 객체의 기본 구조를 정의한다.
+    """
+    ROLE: Final[str] = "role"               # 발신자 역할 (user/assistant/system)
+    CONTENT: Final[str] = "content"         # 메시지 본문 텍스트

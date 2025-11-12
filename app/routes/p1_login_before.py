@@ -17,12 +17,12 @@ from typing import Optional, Tuple
 import streamlit as st
 
 from app.api.p1_login import verify_login
-from app.constants.values import UserInfo, Ratio
-from app.constants.keys import SessionKey, LoginViews, SignupKey
+from app.constants.values import Ratio
+from app.constants.keys import UserInfo, SessionKey, LoginViews, SignupKey
 from app.constants.messages import (
     LoginMsg, LoginSignupMsg, PERSONAL_INFO_AGREE, LOST_PASSWORD
 )
-from app.schema.p1_login import UserLogin
+from app.schemas.p1_login import UserLogin
 from app.utils.p1_login import view_changer, SignUpAction, SignUpUniqueKeys
 
 

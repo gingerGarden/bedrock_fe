@@ -17,9 +17,9 @@ Login API 연동 모듈.
 from typing import Dict, Optional, Union
 from requests import Response
 
-from app.constants.values import API_TIMEOUT, UserInfo, UserUpdateInfo
+from app.constants.values import FixValues
 from app.constants.api_urls import LoginAPIKeys
-from app.constants.keys import SessionKey
+from app.constants.keys import SessionKey, UserInfo, UserUpdateInfo
 from app.constants.messages import (
     LoginMsg, LoginSignupMsg, LoginSelfBlockMsg, LoginSelfUpdateMsg
 )
@@ -62,7 +62,7 @@ def verify_login(
         url=LoginAPIKeys.VERIFY_ID,
         func_200=Status200.verify_login,
         payload=payload,
-        timeout=API_TIMEOUT
+        timeout=FixValues.API_TIMEOUT
     )
 
 # ============================================================
@@ -102,7 +102,7 @@ def verify_unique_key(
         url=LoginAPIKeys.VERIFY_UNIQUE_KEY,
         func_200=Status200.verify_unique_key,
         payload=payload,
-        timeout=API_TIMEOUT
+        timeout=FixValues.API_TIMEOUT
     )
 
 # ============================================================
@@ -159,7 +159,7 @@ def add_new_user(
         url=LoginAPIKeys.ADD_USER,
         func_200=Status200.add_new_user,
         payload=payload,
-        timeout=API_TIMEOUT
+        timeout=FixValues.API_TIMEOUT
     )
 
 
@@ -194,7 +194,7 @@ def self_block(
         url=LoginAPIKeys.SELF_BLOCK,
         func_200=Status200.self_block,
         payload=payload,
-        timeout=API_TIMEOUT
+        timeout=FixValues.API_TIMEOUT
     )
 
 
@@ -242,7 +242,7 @@ def self_update(
         url=LoginAPIKeys.SELF_UPDATE,
         func_200=Status200.self_update,
         payload=payload,
-        timeout=API_TIMEOUT
+        timeout=FixValues.API_TIMEOUT
     )
 
 
@@ -259,8 +259,8 @@ class Status200:
     - JSON 파싱 실패 시: (None, <파싱 실패 메시지>, None)
     - 필수 키 누락/형식 불일치 시: (None|False, <예상치 못한 응답 형식>, None)
     """
-    @classmethod
-    def verify_login(cls, resp: Response) -> APIResponseOutput:
+    @staticmethod
+    def verify_login(resp: Response) -> APIResponseOutput:
         """
         로그인 검증 2xx 응답 파서.
 
@@ -300,8 +300,8 @@ class Status200:
         # ok 필드가 False거나 없음 → 예상치 못한 응답 형식
         return False, LoginMsg.FAIL_UNKNOWN, None
     
-    @classmethod
-    def verify_unique_key(cls, resp: Response) -> APIResponseOutput:
+    @staticmethod
+    def verify_unique_key(resp: Response) -> APIResponseOutput:
         """
         유니크 키 중복 검사 2xx 응답 파서.
 
@@ -333,8 +333,8 @@ class Status200:
 
         return None, LoginSignupMsg.FAIL_UNKNOWN, None
 
-    @classmethod
-    def add_new_user(cls, resp: Response) -> APIResponseOutput:
+    @staticmethod
+    def add_new_user(resp: Response) -> APIResponseOutput:
         """
         신규 사용자 생성 2xx 응답 파서.
 
@@ -364,8 +364,8 @@ class Status200:
         
         return False, LoginSignupMsg.FAIL_UNKNOWN, None
     
-    @classmethod
-    def self_block(cls, resp: Response) -> APIResponseOutput:
+    @staticmethod
+    def self_block(resp: Response) -> APIResponseOutput:
         """
         본인 계정 정지 2xx 응답 파서.
 
@@ -391,8 +391,8 @@ class Status200:
         # ok 필드가 False거나 없음 → 예상치 못한 응답 형식
         return False, LoginSelfBlockMsg.FAIL_UNKNOWN, None
     
-    @classmethod
-    def self_update(cls, resp: Response) -> APIResponseOutput:
+    @staticmethod
+    def self_update(resp: Response) -> APIResponseOutput:
         """
         본인 계정 정보 변경 2xx 응답 파서.
 

@@ -1,15 +1,22 @@
+"""
+관리자 페이지(`pages/4_admin.py`) UI 및 로직.
+
+- 로그인된 사용자만 접근 가능.
+- 비로그인 시 GoLogin으로 로그인 페이지 안내.
+- 관리자 전용 기능은 추후 구현 예정.
+"""
 import streamlit as st
 from app.constants.keys import SessionKey, LoginViews
-from app.utils.session import init_session
 from app.routes.common import GoLogin, basic_ui, InitModelInfo
-from app.routes.p6_setting import Main
+from app.routes.p9_admin import Main, NoAdmin
+from app.utils.session import init_session
 
 
 
 # ---------------------------------------------------------
 # 1. 페이지 기본 설정
 # ---------------------------------------------------------
-basic_ui(title=None)
+basic_ui(title=None, wide=True)
 
 
 # ---------------------------------------------------------
@@ -28,10 +35,16 @@ if not st.session_state[SessionKey.LOGGED_IN]:
     st.session_state[LoginViews.KEY] = LoginViews.LOGIN_BEFORE
 
     # 로그인이 되어 있지 않은 경우, 로그인 페이지로 가이드
-    GoLogin.UI(title="Setting")
+    GoLogin.UI(title="Admin")
 else:
-    # 다른 페이지의 View 초기화
-    st.session_state[LoginViews.KEY] = LoginViews.LOGIN_AFTER
+    if st.session_state[SessionKey.IS_ADMIN]:
+        
+        # 다른 페이지의 View 초기화
+        st.session_state[LoginViews.KEY] = LoginViews.LOGIN_AFTER
 
-    # UI 출력
-    Main.UI()
+        # UI 출력
+        Main.UI()
+        
+    else:
+        NoAdmin.UI()
+        
