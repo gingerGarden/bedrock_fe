@@ -179,7 +179,7 @@ class AdminBtns:
     ALL_FILTER: Final[str] = '"DB 조회"를 통해 조회된 전체 유저들을 반환합니다.'
     BLOCK_FILTER: Final[str] = '"DB 조회"를 통해 조회된 유저 중, 정지된(Soft-delete) 사용자의 행만 조회합니다.'
     ID_FILTER: Final[str] = '"DB 조회"를 통해 조회된 유저 중, "ID"에 입력된 유저의 계정이 있는 행을 조회합니다(일치).'
-
+    CLEAR_FILTER: Final[str] = "선택되어 있는 index들을 초기 상태로 만듭니다."
 
     # --- 2. 조작 ---
     SIGNUP_TRUE: Final[str] = "선택된 계정들의 플랫폼 사용을 승인합니다. 승인 시점(signup_at)이 자동 갱신됩니다."

@@ -155,17 +155,21 @@ class SignupKey:
 class AdminViews:
     KEY: Final[str] = "admin_view"
 
+    # View key
     ALL: Final[str] = "f_all"
     USER_ID: Final[str] = "f_user_id"
     SIGNUP: Final[str] = "f_signup"
     DEVELOPER: Final[str] = "f_developer"
     BLOCK: Final[str] = "f_block"
+    CLEAR: Final[str] = "f_clear"
 
+    # View에 할당된 Table key
     TABLE_ALL: Final[str] = "t_all"
     TABLE_USER_ID: Final[str] = "t_user_id"
     TABLE_SIGNUP: Final[str] = "t_signup"
     TABLE_DEVELOPER: Final[str] = "t_developer"
     TABLE_BLOCK: Final[str] = "t_block"
+    TABLE_CLAER: Final[str] = "t_clear"
 
 
 class AdminUserModify:

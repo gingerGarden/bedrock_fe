@@ -72,9 +72,10 @@ class SideBar:
             
             # 1) 조회
             (
-                f_search, f_all, 
-                f_signup, f_block, 
-                f_developer, f_user_id, 
+                f_search, f_clear, 
+                f_all, f_signup,
+                f_developer, f_block, 
+                f_user_id, 
                 user_id
             ) = cls._find_btns()
             st.markdown("---")
@@ -113,6 +114,10 @@ class SideBar:
         if f_user_id: 
             GetTable.one_user(user_id=user_id) # 단일 ID DF 준비
             view_changer(AdminViews.USER_ID)
+        # 선택 초기화
+        if f_clear:
+            view_changer(AdminViews.CLEAR)
+
             
         # 현재 뷰에 따른 렌더링 (각 뷰 진입 시 선택 초기화)
         if st.session_state[AdminViews.KEY] == AdminViews.ALL:
@@ -130,6 +135,9 @@ class SideBar:
         if st.session_state[AdminViews.KEY] == AdminViews.USER_ID:
             st.session_state[AdminUserModify.INDEX_LIST] = []
             ShowTable.rendering(key=AdminViews.TABLE_USER_ID)
+        if st.session_state[AdminViews.KEY] == AdminViews.CLEAR:
+            st.session_state[AdminUserModify.INDEX_LIST] = []
+            ShowTable.rendering(key=AdminViews.TABLE_CLAER)
 
         # 2) 조작 (버튼 이벤트 → 액션 호출)
         # 승인
@@ -166,37 +174,45 @@ class SideBar:
                 type="primary",
                 help=AdminBtns.DB_SEARCH
             )
-            # 승인 대기 필터
-            f_signup = st.button(
-                "승인 대기", 
-                use_container_width=True,
-                help=AdminBtns.SIGNUP_FILTER
-            )
-            # 개발자 필터
-            f_developer = st.button(
-                "개발자", 
-                use_container_width=True,
-                help=AdminBtns.DEVELOPER_FILTER
-            )
-
-        with col2:
             # 전체 보기(ALL DF 렌더)
             f_all = st.button(
                 "모두 보기",
                 use_container_width=True,
                 help=AdminBtns.ALL_FILTER
             )
+
+            # 개발자 필터
+            f_developer = st.button(
+                "개발자", 
+                use_container_width=True,
+                help=AdminBtns.DEVELOPER_FILTER
+            )
+            # 단일 계정 필터
+            f_user_id = st.button(
+                "단일 ID", 
+                use_container_width=True,
+                help=AdminBtns.ID_FILTER
+            )
+
+        with col2:
+            # 초기화 필터
+            f_clear = st.button(
+                "선택 초기화", 
+                use_container_width=True,
+                type="primary",
+                help=AdminBtns.CLEAR_FILTER
+            )
+            # 승인 대기 필터
+            f_signup = st.button(
+                "승인 대기", 
+                use_container_width=True,
+                help=AdminBtns.SIGNUP_FILTER
+            )
             # 정지 계정 필터
             f_block = st.button(
                 "정지 계정", 
                 use_container_width=True,
                 help=AdminBtns.BLOCK_FILTER
-            )
-            # 단일 계정 필터
-            f_user_id = st.button(
-                "단일 조회", 
-                use_container_width=True,
-                help=AdminBtns.ID_FILTER
             )
 
         # 탐색 대상 ID 입력 (단일 조회 시 사용)
@@ -206,12 +222,12 @@ class SideBar:
         )
 
         return (
-            f_search, f_all, 
-            f_signup, f_block, 
-            f_developer, f_user_id, 
+            f_search, f_clear, 
+            f_all, f_signup,
+            f_developer, f_block, 
+            f_user_id, 
             user_id
         )
-
 
     @classmethod        
     def _action_btns(cls):
@@ -262,7 +278,7 @@ class SideBar:
             )
             # 비밀번호 변경
             pwd_converter = st.button(
-                "비밀번호 변경",
+                "비번 변경",
                 use_container_width=True,
                 help=AdminBtns.PASSWORD_CONVERT
             )

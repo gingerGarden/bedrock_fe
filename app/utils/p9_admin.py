@@ -157,6 +157,8 @@ class GetTable:
         st.session_state[AdminViews.TABLE_SIGNUP] = df[df["승인여부"] == "False"]
         st.session_state[AdminViews.TABLE_BLOCK] = df[df["정지여부"] == "True"]
         st.session_state[AdminViews.TABLE_DEVELOPER] = df[df["권한"] == "developer"]
+        # Clear는 조회될 수 없는 값을 조회하여, 선택된 행을 취소하는 방법을 사용
+        st.session_state[AdminViews.TABLE_CLAER] = df[df["idx"].isna()]
             
     @classmethod
     def one_user(cls, user_id: Optional[str]):
@@ -232,6 +234,7 @@ class ShowTable:
                 AdminViews.TABLE_BLOCK,
                 AdminViews.TABLE_DEVELOPER,
                 AdminViews.TABLE_USER_ID,
+                AdminViews.TABLE_CLAER
             ]:
             raise ValueError("잘못된 key를 입력했습니다.")
 
@@ -295,11 +298,17 @@ class ShowTable:
         """
         # Table 주요 정보 출력
         col1, col2 = st.columns([1, 1])
+
+        # 선택된 index
+        selected_idxes = st.session_state.get(AdminUserModify.INDEX_LIST, [])
+
         with col1:
-            st.caption(f"총 행: **{len(df):,}**")
+            st.caption(f"총 행: {len(df):,}")
+            st.caption(f"선택 행: {len(selected_idxes):,}")
+
         with col2:
-            sel_idxes = st.session_state.get(AdminUserModify.INDEX_LIST, [])
-            st.caption(f"선택 index: {sel_idxes}")
+            
+            st.caption(f"선택 index: {selected_idxes}")
     
 
 
