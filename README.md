@@ -1,87 +1,91 @@
-# 프론트엔드 웹서버 - 프로토타입 버전
-* Streamlit 기반의 알파 테스트용 프론트엔드.  
-* FastAPI 백엔드와 연동되어 로그인/채팅/대시보드 기능을 제공합니다.
-> * FastAPI 백엔드는 실제 서비스 단계를 고려합니다.
+# KHA 프론트엔드 (Streamlit)
+FastAPI 백엔드와 연동되는 KHA 알파 버전의 Streamlit 멀티페이지 앱입니다. 로그인/채팅/관리자 기능을 제공하며, 일부 연구 기능 페이지는 스켈레톤 상태로 남겨두었습니다.
+
+- **주요 기술**: Python, Streamlit, requests, pandas, st-aggrid, pydantic
+- **백엔드 연동**: GPU 웹(LLM)·WEB(계정/관리) API 엔드포인트는 `app/core/config.py`, `app/constants/api_urls.py`에 정의
+- **사내 패키지 의존성**: `bedrock_core`, `kha` 모듈을 사용합니다(사내 패키지 설치 필요).
 
 ---
 
 <br>
-<br>
 
-# 1. 개요
-
-## A. 프론트엔드 웹서버 역할
-* 해당 프론트엔드 웹서버는 MVP(Minimum Viable Product)를 지향합니다
-    * Streamlit 기반 페이지 경량화를 목표로 개발됩니다
-    * FastAPI 백엔드 API와 통신합니다.
-    
-* 주요 기능
-    1. 로그인 : 사용자 인증 및 상태 유지 - 사용자별 대화 내용 유지
-    2. 채팅 : 백엔드 LLM 응답 연동 UI
-    3. 데시보드 : 통계 및 주요 지표 시각화
-    4. 관리자 페이지 : 사용자 관리 및 로그 확인
-
-* 제외 기능
-    1. ORM 기반 로그인 : test_db.json 대신 사용
-    2. 프론트엔드 웹서버 보안 기능
-
-## B. 백엔드 웹서버 역할
-* 백엔드 웹서버는 LLM 연산 (RAG, MCP 사용 시, DB I/O까지)만 고려합니다
-    * 백엔드 웹서버의 LLM 연산은 프론트엔드 웹서버를 통해서만 실행할 수 있습니다
-
-* 보안 기능
-    1. 프론트엔드 웹서버와 API 통신만을 이용한 데이터 통신
-    2. "API 키"를 입력해야만 API 사용 가능
-
----
-
-<br>
-<br>
-
-# 2. 구조
+## 폴더 구조
 ```text
-kha_frontend/
-│
-├── main.py                     # Streamlit 앱의 메인 진입점
-├── README.md                   # 프로젝트 개요 및 사용법 설명서
-│
-├── app/                        # 프론트엔드의 주요 로직을 담는 소스 디렉토리
-│   ├── core/
-│   │   ├── api.py              # 백엔드 서버와 통신하는 API 함수 모음
-│   │   └── config.py           # API 주소 등 핵심 설정값
-│   │
-│   ├── routes/
-│   │   ├── common.py           # 여러 페이지에서 공통으로 사용하는 UI 컴포넌트
-│   │   ├── main.py             # 메인 페이지에 표시될 정적 텍스트
-│   │   ├── p1_login.py         # 로그인 페이지의 UI 및 이벤트 처리 로직
-│   │   └── p2_chat.py          # 채팅 페이지의 UI 및 이벤트 처리 로직
-│   │
-│   ├── schema/
-│   │   ├── keys.py             # 세션, API 등에서 사용하는 상수 키(key)
-│   │   └── pathes.py           # 파일, 페이지 경로 등 상수
-│   │
-│   └── utils/
-│       ├── auth.py             # 사용자 인증(로그인/로그아웃) 관련 함수
-│       ├── chat.py             # 채팅 응답 스트리밍 처리 등 채팅 관련 함수
-│       └── session.py          # Streamlit 세션 상태 관리 함수
-│
-├── pages/                      # Streamlit 멀티페이지 앱의 각 페이지
-│   ├── 1_login.py              # 로그인 페이지
-│   ├── 2_chat.py               # 채팅 페이지
-│   ├── 3_dashboard.py          # 대시보드 페이지
-│   └── 4_admin.py              # 관리자 페이지
-│
-└── src/                        # 리소스 파일 (이미지, 데이터 등)
-    ├── KTR-icon.ico            # 애플리케이션 아이콘(파비콘)
-    └── test_db.json            # 프로토타입용 로컬 사용자 DB
+.
+├── Main.py                  # Streamlit 진입점
+├── README.md                # 기존 문서(보존)
+├── README_new.md            # 신규 작성 문서(본 파일)
+├── app/
+│   ├── core/config.py       # 백엔드 URL/버전, 보호 스위치
+│   ├── constants/           # 키, 메시지, 경로, API URL, 상수
+│   ├── api/                 # 로그인/채팅/관리자 API 클라이언트
+│   ├── routes/              # 페이지별 UI 구성 로직
+│   ├── schemas/             # pydantic 스키마
+│   └── utils/               # 세션/채팅/관리자 테이블/공용 유틸
+├── pages/                   # Streamlit 멀티페이지 엔트리
+│   ├── 1_Login.py
+│   ├── 2_KHA_chat.py
+│   ├── 3_FloraGenesis.py    # TODO placeholder
+│   ├── 4_PANCDR.py          # TODO placeholder
+│   ├── 5_Dashboard.py       # TODO placeholder
+│   └── 9_Admin.py
+└── src/
+    ├── KTR-icon.ico         # 파비콘
+    └── test_db.json         # 프로토타입용 로컬 DB
 ```
 
+
 ---
 
 <br>
+
+## 페이지/기능 개요
+- **메인(Main.py)**  
+  공통 UI 설정(`basic_ui`), 서비스 소개, 세션 초기화(`init_session`), 모델 목록 초기 로드(`InitModelInfo.run`).
+
+- **로그인(Login)** (`pages/1_Login.py`)  
+  - 로그인/회원가입/개인정보 동의/비밀번호 분실/계정 정지 뷰 전환(`LoginViews`).  
+  - 회원가입 시 `SignUpUniqueKeys`로 ID·사번·이메일 중복 검사 → `verify_unique_key` API 호출.  
+  - `SignUpAction`이 입력 검증 후 `add_new_user` 호출, 개인정보 미동의 방지.  
+  - 로그인 후에는 `AfterLogin`, 정보 수정(`EditAction`+`self_update`), 계정 정지(`SoftDeleteAction`+`self_block`) 제공.
+
+- **채팅(Chat)** (`pages/2_KHA_chat.py`, `app/routes/utils`)  
+  - 모델 목록/기본 모델은 10분 캐시(`st.cache_data`).  
+  - 사이드바에서 모델 선택, 대화 초기화.  
+  - `Response`가 마지막 사용자 메시지를 `streaming_response`로 전송해 SSE 스트림을 `st.write_stream`으로 표시, 완료 후 세션에 저장.
+
+- **연구 기능 Placeholder**  
+  - FloraGenesis, PANCDR, Dashboard는 현재 `TODO` 문구만 노출.
+
+- **관리자(Admin)** (`pages/9_Admin.py`, `app/routes/utils`)  
+  - 비관리자 접근 시 차단 안내.  
+  - `st_aggrid` 기반 사용자 테이블 조회/필터링: 전체, 승인 대기, 정지, 개발자, 단일 ID.  
+  - 일괄 승인/승인 해제/정지/정지 해제/하드 삭제(스위치에 따라 차단 가능), 단일 비밀번호 초기화.  
+  - `UserTable`이 백엔드 응답을 pandas DataFrame으로 전처리하고, 경과 시간·권한 파생 컬럼 및 방어용 인덱스 저장.
+
+---
+
+## 개발 시 참고
+- **세션 초기화**: 각 페이지 진입 시 `init_session()`과 `InitModelInfo.run()`을 호출해 로그인 상태/모델 정보를 준비합니다. `SessionKey`, `LoginViews`, `AdminViews`는 `app/constants/keys.py`에 정의되어 있습니다.
+- **API 통신 패턴**: `bedrock_core.data.api.APIResponseHandler`를 통해 공통 예외/파싱을 처리하고, `Status200` 클래스가 엔드포인트별 정상 응답을 검증합니다.
+- **모델 선택 상태**: 선택된 모델명과 인덱스는 세션에 저장되며, 사이트 전역에서 공유됩니다.
+- **플래시 메시지**: `app/utils/utils.py`의 `Flash` 유틸을 통해 일시적 안내/경고를 노출합니다.
+- **하드 삭제 방지**: `app/core/config.py`의 `KILL_HARD_DELETE_SWITCH`를 True로 두면 관리자 페이지에서 하드 삭제 버튼을 무력화할 수 있습니다.
+
+---
+
+## 빠른 문제 해결 체크리스트
+- 백엔드 연결 오류: `app/core/config.py` URL/포트, 방화벽/포트포워딩, 백엔드 서버 기동 여부 확인.
+- 모델 목록이 비어있음: GPU 백엔드의 `/base/model_list` 응답 확인, 캐시(`st.cache_data`) 초기화를 위해 Streamlit 재기동.
+- 관리자 테이블이 비어있음: `GET /admin/search_all` 응답 구조가 `App.schemas.p9_admin`와 일치하는지 확인.
+- 로그인/회원가입 입력 실패: `app/schemas/p1_login.py`에 정의된 패턴(아이디/비밀번호/이메일)을 따른 값인지 검증.
+
+
+---
+
 <br>
 
-# 3. 실행 방법
+## 실행 방법
 * 기본 실행 방법
 ```bash
 streamlit run Main.py
@@ -89,7 +93,7 @@ streamlit run Main.py
 
 <br>
 
-## 3.1. 내부망 사용자들을 위한 네트워크 연결
+### 내부망 사용자들을 위한 네트워크 연결
 * 개요
 > * wsl 환경
 > * 동일 네트워크 내 사내 이용자들만 사용
@@ -97,17 +101,18 @@ streamlit run Main.py
 
 <br>
 
-### 3.1.1. 단계별 설정 방법
+### 단계별 설정 방법
 #### A. Streamlit 웹서버 실행
+
 ```bash
 streamlit run Main.py --server.address=0.0.0.0
 ```
-* WSL 내부의 8501번 포트를 모든 IP 주소에 대해 개방
+  * WSL 내부의 8501번 포트를 모든 IP 주소에 대해 개방
 
 <br>
 
 #### B. WSL 포트 포워딩 설정
-* WSL의 8501 포트를 Windows 호스트로 전달 [Windows PowerShell에서 수행]
+  * WSL의 8501 포트를 Windows 호스트로 전달 [Windows PowerShell에서 수행]
 
 1. WSL의 IP 주소 확인
     * `hostname -I` 등으로 현재 IP 주소 확인
@@ -166,6 +171,6 @@ netsh interface portproxy delete v4tov4 listenport=8501 listenaddress=0.0.0.0
 
 #### D. 외부에서 접속
 * Windows의 IP 주소 확인
-    * CMD 또는 PowerShell에서 `ipconfig` 명령어를 실해앟여 Windows PC의 IPv4 주소 확인
+    * CMD 또는 PowerShell에서 `ipconfig` 명령어를 실행하여 Windows PC의 IPv4 주소 확인
 * 동일 네트워크 내 다른 장비로 접속
     * `http://[Windows IP 주소]:8501`

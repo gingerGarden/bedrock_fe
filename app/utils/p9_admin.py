@@ -307,7 +307,6 @@ class ShowTable:
             st.caption(f"선택 행: {len(selected_idxes):,}")
 
         with col2:
-            
             st.caption(f"선택 index: {selected_idxes}")
     
 
