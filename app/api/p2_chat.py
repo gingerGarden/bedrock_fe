@@ -10,12 +10,14 @@
     → 백엔드의 Chat API에 요청을 보내고 SSE(Server-Sent Events) 형식의
       응답을 실시간으로 파싱하여 UI에 전달.
 """
-from typing import List, Dict
+from typing import List
 
 import streamlit as st
 import requests
 
 from app.constants.api_urls import ChatAPIKeys
+from app.constants.keys import SessionKey
+from app.constants.messages import ChatMsg
 
 from bedrock_core.data.sse import SSEConverter
 
@@ -70,7 +72,7 @@ def get_default_model() -> str:
         return ""
     
 
-def streaming_response(payload: Dict[str, str]):
+def streaming_response(payload: dict[str, str]):
     """
     백엔드 채팅 API에 POST 요청을 보내고, 스트리밍 응답을 순차적으로 반환합니다.
 
@@ -95,8 +97,19 @@ def streaming_response(payload: Dict[str, str]):
         ) as r:
             # HTTP 상태 코드가 200-299 범위가 아니면 예외 발생
             r.raise_for_status()
+
             # 응답을 라인 단위로 순회하며 SSE 형식 파싱
             for chunk in r.iter_content(chunk_size=None):
+
+                # 중단 플래그 확인
+                if st.session_state.get(SessionKey.STOP_STREAM, False):
+                    
+                    # 서버 연결 즉시 종료 + interrupt 1회 출력
+                    r.close()       # BE(AI)로 열려있는 HTTP 스트리밍 연결 종료
+                    yield ChatMsg.INTERRUPT
+                    return
+
+                # sse 파싱해서 txt 반환
                 txt = SSEConverter.sse_to_txt(chunk)
                 if txt:
                     yield txt

@@ -39,11 +39,11 @@ class TxtBar:
 
         # 2. 현재 LLM이 응답을 생성(스트리밍)하는 중인지 확인합니다.
         if st.session_state.get(SessionKey.STREAMING, False):
-            # 3a. 스트리밍 중이라면: 사용자 입력을 막고, `Response` 클래스를 통해
-            #     백엔드 응답을 받아 화면에 실시간으로 표시합니다.
+            # a. 스트리밍 중이라면: 사용자 입력을 막고, `Response` 클래스를 통해
+            #    백엔드 응답을 받아 화면에 실시간으로 표시합니다.
             Response.main()
         else:
-            # 3b. 스트리밍 중이 아니라면: 사용자 입력을 받을 준비를 합니다.
+            # b. 스트리밍 중이 아니라면: 사용자 입력을 받을 준비를 합니다.
             cls.user_input()
 
     @classmethod
@@ -64,6 +64,9 @@ class TxtBar:
             # 현재 대화가 생성중이면 채팅 입력이 되지 않는다
             disabled=st.session_state.get(SessionKey.STREAMING, False)
         ):
+            # 이전 중단 상태 초기화
+            st.session_state[SessionKey.STOP_STREAM] = False
+            
             # 세션에 사용자 메시지 저장
             st.session_state[SessionKey.MESSAGE].append(
                 {"role": ChatRoles.USER, "content": raw_content}
@@ -89,6 +92,8 @@ class SideBar:
             # --------- 버튼 추가 ---------
             # 모델명 드롭박스
             cls.models_dropbox()
+            # 대화 생성 중단
+            cls.stop_generation()
             # 대화 내용 초기화
             cls.clear()
 
@@ -111,12 +116,26 @@ class SideBar:
             InitModelInfo.set_model_idx()
             
     @classmethod
+    def stop_generation(cls):
+        """LLM 응답 생성 중단 버튼"""
+        if st.button(
+            "응답 생성 중단",
+            use_container_width=True,
+            disabled=(
+                False if 
+                st.session_state.get(SessionKey.STREAMING, False) 
+                else True
+            ),      # 대화 생성 중에만 누를 수 있음
+            type="primary"
+        ):
+            st.session_state[SessionKey.STOP_STREAM] = True
+
+    @classmethod
     def clear(cls):
         """대화 내용 초기화 버튼."""
         if st.button(
             "대화 내용 초기화",
             use_container_width=True, 
-            type="primary",
             # 현재 대화가 생성중이면 채팅 입력이 되지 않는다
             disabled=st.session_state[SessionKey.STREAMING]
         ):

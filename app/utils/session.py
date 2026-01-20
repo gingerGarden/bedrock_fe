@@ -47,6 +47,7 @@ def _init_session_action():
         # 대화 내용 초기화
         SessionKey.MESSAGE: [],
         SessionKey.STREAMING: False,
+        SessionKey.STOP_STREAM: False,
 
         # View 초기화
         LoginViews.KEY: LoginViews.LOGIN_BEFORE

@@ -32,23 +32,24 @@ class SessionKey:
     로그인 여부, 사용자 정보, 모델 선택 정보 등을 포함한다.
     """
     # --- 로그인 상태/사용자 정보 ---
-    LOGGED_IN: Final[str] = "logged_in"         # 로그인 여부(bool)
-    ID: Final[str] = "id"                       # 현재 로그인된 사용자 ID
-    USER_IDX: Final[int] = "user_idx"           # 사용자 index(DB)
-    USER_NAME: Final[str] = "user_name"         # 사용자 이름(별명)
-    KTR_ID: Final[str] = "ktr_id"               # 사용자 사번
-    EMAIL: Final[str] = "email"                 # 사용자 이메일
-    IS_DEVELOPER: Final[str] = "is_developer"   # 개발자 권한 여부
-    IS_ADMIN: Final[str] = "is_admin"           # 관리자 권한 여부
+    LOGGED_IN: Final[str] = "logged_in"             # 로그인 여부(bool)
+    ID: Final[str] = "id"                           # 현재 로그인된 사용자 ID
+    USER_IDX: Final[int] = "user_idx"               # 사용자 index(DB)
+    USER_NAME: Final[str] = "user_name"             # 사용자 이름(별명)
+    KTR_ID: Final[str] = "ktr_id"                   # 사용자 사번
+    EMAIL: Final[str] = "email"                     # 사용자 이메일
+    IS_DEVELOPER: Final[str] = "is_developer"       # 개발자 권한 여부
+    IS_ADMIN: Final[str] = "is_admin"               # 관리자 권한 여부
     
     # --- 대화/스트리밍 ---
-    MESSAGE: Final[str] = "message"             # 채팅 대화 기록
-    STREAMING: Final[str] = "streaming"         # 현재 LLM 응답 스트리밍 여부
+    MESSAGE: Final[str] = "message"                 # 채팅 대화 기록
+    STREAMING: Final[str] = "streaming"             # 현재 LLM 응답 스트리밍 여부
+    STOP_STREAM: Final[str] = "stop_stream"         # LLM 응답 스트리밍 정지 여부
 
     # --- 모델 관련 ---
-    MODEL_LIST: Final[str] = "model_list"       # 사용 가능 모델 목록
-    MODEL: Final[str] = "model"                 # 현재 선택된 모델 이름
-    MODEL_IDX: Final[str] = "model_number"      # 모델 목록에서 선택된 인덱스
+    MODEL_LIST: Final[str] = "model_list"           # 사용 가능 모델 목록
+    MODEL: Final[str] = "model"                     # 현재 선택된 모델 이름
+    MODEL_IDX: Final[str] = "model_number"          # 모델 목록에서 선택된 인덱스
 
     
 # Flash 사용을 위한 키
