@@ -45,6 +45,7 @@ class SessionKey:
     MESSAGE: Final[str] = "message"                 # 채팅 대화 기록
     STREAMING: Final[str] = "streaming"             # 현재 LLM 응답 스트리밍 여부
     STOP_STREAM: Final[str] = "stop_stream"         # LLM 응답 스트리밍 정지 여부
+    TEMP_RESPONSE: Final[str] = "temp_response"     # 응답 중단 시 복구용 임시 저장소
 
     # --- 모델 관련 ---
     MODEL_LIST: Final[str] = "model_list"           # 사용 가능 모델 목록
@@ -192,3 +193,4 @@ class StreamLitChatKey:
     """
     ROLE: Final[str] = "role"               # 발신자 역할 (user/assistant/system)
     CONTENT: Final[str] = "content"         # 메시지 본문 텍스트
+

@@ -48,6 +48,7 @@ def _init_session_action():
         SessionKey.MESSAGE: [],
         SessionKey.STREAMING: False,
         SessionKey.STOP_STREAM: False,
+        SessionKey.TEMP_RESPONSE: "",
 
         # View 초기화
         LoginViews.KEY: LoginViews.LOGIN_BEFORE

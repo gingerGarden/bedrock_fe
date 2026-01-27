@@ -7,6 +7,7 @@ import streamlit as st
 
 from app.api.p2_chat import streaming_response
 from app.constants.keys import SessionKey, StreamLitChatKey
+from app.constants.messages import ChatMsg
 
 from kha.schema.keys import ChatRoles
 
@@ -22,23 +23,36 @@ class Response:
     def main(cls):
         """응답 생성부터 표시, 세션 저장까지 전체 처리."""
 
-        # 1. payload 생성
+        # 1. 중단 상태 확인 (재실행 시 진입점)
+        if st.session_state.get(SessionKey.STOP_STREAM, False):
+            # 중단된 시점까지 저장된 텍스트가 있다면 불러오기
+            interrupted_txt = st.session_state.get(SessionKey.TEMP_RESPONSE, "")
+            if interrupted_txt:
+                # 마지막에 중단 메시지 추가
+                interrupted_txt += ChatMsg.INTERRUPT
+                cls._save_response(interrupted_txt)
+
+            cls._cleanup_state()
+            st.rerun()
+            return
+        
+        # 2. 정상 시작 전 초기화
+        st.session_state[SessionKey.TEMP_RESPONSE] = ""
+        # payload 생성
         txt_dict = cls._convert_to_txt_dict()
         payload = cls._make_payload(txt_dict)
 
-        # 2. 스트리밍 표시
+        # 3. 스트리밍 표시
         with st.chat_message(ChatRoles.ASSISTANT):
-                
             # 스트리밍 응답 실시간 렌더링 - streaming_response 제너레이터가 yield하는 텍스트 조각
             full_response = st.write_stream(streaming_response(payload=payload))
 
-        # 3. full_response가 있다면 저장
-        if full_response is not None and str(full_response).strip() != "":
-            cls._save_response(full_response)
+        # 4. 완료 후 저장
+        if full_response:
+            cls._save_response(str(full_response))
 
         # 4. 상태 정리
-        st.session_state[SessionKey.STREAMING] = False      # 사용자 입력창 재활성화
-        st.session_state[SessionKey.STOP_STREAM] = False
+        cls._cleanup_state()
         st.rerun()
 
     @classmethod
@@ -99,3 +113,10 @@ class Response:
                 "content": full_response
             }
         )
+
+    @classmethod
+    def _cleanup_state(cls):
+        """상태 정리 공통 로직"""
+        st.session_state[SessionKey.STREAMING] = False
+        st.session_state[SessionKey.STOP_STREAM] = False
+        st.session_state[SessionKey.TEMP_RESPONSE] = ""

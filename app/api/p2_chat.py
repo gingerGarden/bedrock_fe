@@ -109,10 +109,10 @@ def streaming_response(payload: dict[str, str]):
             buffer: str = ""
             for chunk in r.iter_content(chunk_size=1024, decode_unicode=True):
 
-                # 중단 플래그 확인
+                # 중단 플래그 확인 시 즉시 종료
                 if st.session_state.get(SessionKey.STOP_STREAM, False):
                     r.close()
-                    yield ChatMsg.INTERRUPT
+                    # yield ChatMsg.INTERRUPT       # Streamlit rerun 방식에 의해 해당 코드 의미 없음
                     return
                 
                 if chunk:
@@ -126,6 +126,8 @@ def streaming_response(payload: dict[str, str]):
                         # 파싱
                         txt = SSEConverter.sse_to_txt(message)
                         if txt:
+                            # 세션 상태에 실시간 누적 기록
+                            st.session_state[SessionKey.TEMP_RESPONSE] += txt
                             yield txt
 
     except requests.exceptions.RequestException as e:
