@@ -17,6 +17,7 @@ import requests
 
 from app.constants.api_urls import ChatAPIKeys
 from app.constants.keys import SessionKey
+from app.constants.values import FixValues
 from app.constants.messages import ChatMsg
 
 from bedrock_core.data.sse import SSEConverter
@@ -70,7 +71,6 @@ def get_default_model() -> str:
     except requests.exceptions.RequestException as e:
         st.error(f"디폴트 모델명 로딩 실패: {e}")
         return ""
-    
 
 def streaming_response(payload: dict[str, str]):
     """
@@ -88,31 +88,92 @@ def streaming_response(payload: dict[str, str]):
         str: 모델이 생성한 텍스트 조각.
              연결 오류 발생 시 에러 메시지를 한 번 yield.
     """
+    # 요청 시작 전 중단 플래그가 켜져 있다면 아예 요청을 보내지 않음
+    if st.session_state.get(SessionKey.STOP_STREAM, False):
+        yield ChatMsg.INTERRUPT
+        return
+
+    # 정상 로직
     try:
         with requests.post(
             ChatAPIKeys.CHAT, 
             json=payload, 
             stream=True,
-            timeout=300         # 5분 타임아웃
+            timeout=FixValues.CHAT_TIME_OUT         # 5분 타임아웃
         ) as r:
             # HTTP 상태 코드가 200-299 범위가 아니면 예외 발생
             r.raise_for_status()
 
-            # 응답을 라인 단위로 순회하며 SSE 형식 파싱
-            for chunk in r.iter_content(chunk_size=None):
+            # iter_content + Buffer 방식 사용
+            # Markdown 줄바꿈(\n) 보존 및 패킷 파편화(Fragmentation) 해결
+            buffer: str = ""
+            for chunk in r.iter_content(chunk_size=1024, decode_unicode=True):
 
                 # 중단 플래그 확인
                 if st.session_state.get(SessionKey.STOP_STREAM, False):
-                    
-                    # 서버 연결 즉시 종료 + interrupt 1회 출력
-                    r.close()       # BE(AI)로 열려있는 HTTP 스트리밍 연결 종료
+                    r.close()
                     yield ChatMsg.INTERRUPT
                     return
+                
+                if chunk:
+                    buffer += chunk
 
-                # sse 파싱해서 txt 반환
-                txt = SSEConverter.sse_to_txt(chunk)
-                if txt:
-                    yield txt
+                    # 버퍼에 이중 개행(\n\n, SSE 이벤트 구분자)이 있을 때마다 처리
+                    while "\n\n" in buffer:
+                        # 첫 번째 이벤트 추출
+                        message, buffer = buffer.split("\n\n", 1)
+
+                        # 파싱
+                        txt = SSEConverter.sse_to_txt(message)
+                        if txt:
+                            yield txt
 
     except requests.exceptions.RequestException as e:
         yield f"백엔드 연결 오류: {e}"
+
+    
+
+# def streaming_response(payload: dict[str, str]):
+#     """
+#     백엔드 채팅 API에 POST 요청을 보내고, 스트리밍 응답을 순차적으로 반환합니다.
+
+#     동작:
+#         - stream=True로 연결을 유지하며 데이터 조각(chunk)을 순차 수신합니다.
+#         - 각 chunk는 SSE(Server-Sent Events) 형식이므로 SSEConverter를 사용해 텍스트만 추출합니다.
+#         - 추출된 텍스트를 yield하여 UI에서 실시간으로 출력할 수 있게 합니다.
+
+#     Args:
+#         payload (Dict[str, str]): 요청 데이터 (예: {"txt": "안녕", "model_name": "gemma:2b"})
+
+#     Yields:
+#         str: 모델이 생성한 텍스트 조각.
+#              연결 오류 발생 시 에러 메시지를 한 번 yield.
+#     """
+#     try:
+#         with requests.post(
+#             ChatAPIKeys.CHAT, 
+#             json=payload, 
+#             stream=True,
+#             timeout=300         # 5분 타임아웃
+#         ) as r:
+#             # HTTP 상태 코드가 200-299 범위가 아니면 예외 발생
+#             r.raise_for_status()
+
+#             # 응답을 라인 단위로 순회하며 SSE 형식 파싱
+#             for chunk in r.iter_content(chunk_size=None):
+
+#                 # 중단 플래그 확인
+#                 if st.session_state.get(SessionKey.STOP_STREAM, False):
+                    
+#                     # 서버 연결 즉시 종료 + interrupt 1회 출력
+#                     r.close()       # BE(AI)로 열려있는 HTTP 스트리밍 연결 종료
+#                     yield ChatMsg.INTERRUPT
+#                     return
+
+#                 # sse 파싱해서 txt 반환
+#                 txt = SSEConverter.sse_to_txt(chunk)
+#                 if txt:
+#                     yield txt
+
+#     except requests.exceptions.RequestException as e:
+#         yield f"백엔드 연결 오류: {e}"

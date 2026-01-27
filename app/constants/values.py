@@ -25,6 +25,11 @@ class FixValues:
         3.0,    # Connect timeout (서버 연결 대기 시간)
         5.0     # Read timeout (응답 수신 대기 시간)
     )
+    # Chat Time Out
+    CHAT_TIME_OUT: Final[int] = 300
+    """
+    app/api/p2_chat.py - streaming_response의 출력에서, API의 대기 시간
+    """
     # Flash life
     FLASH_LIFE: Final[int] = 2
     """
