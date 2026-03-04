@@ -7,6 +7,7 @@
 """
 import streamlit as st
 
+from app.api.p2_chat import stop_streaming
 from app.constants.keys import SessionKey
 from app.routes.common import InitModelInfo
 from app.utils.p2_chat import Response
@@ -128,7 +129,14 @@ class SideBar:
             ),      # 대화 생성 중에만 누를 수 있음
             type="primary"
         ):
+            # 1. 프론트엔드 루프 중단 플래그 설정
             st.session_state[SessionKey.STOP_STREAM] = True
+
+            # 2. 백엔드에 실제 중단 API 호출
+            request_id = st.session_state.get(SessionKey.CHAT_REQUEST_ID)
+            if request_id:
+                stop_streaming(request_id=request_id)
+            
 
     @classmethod
     def clear(cls):

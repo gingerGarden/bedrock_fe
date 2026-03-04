@@ -19,3 +19,12 @@ Admin 페이지 2. 조작의 Hard-delete를 디폴트로 막을지 여부
 True = 막음 (실 서비스 시 막을 것)
 False = 막지 않음 (개발 과정 중 막지 말 것)
 """
+
+
+# Chat 방식
+"""
+Chat 방식 정의
+True = metadata를 Chat API 사용 시 함께 전달 받음
+False = metadata를 Chat API 사용 시 전달받지 않음
+"""
+CHAT_WITH_META: Final[bool] = True

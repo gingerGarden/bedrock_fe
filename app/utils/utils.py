@@ -1,3 +1,4 @@
+import uuid
 import streamlit as st
 from typing import Literal, Optional, Dict, Final
 
@@ -28,6 +29,58 @@ def string_space_converter(value: str) -> str:
     return value
 
 
+def make_request_id(
+        prefix: str | None = None,
+        *,
+        norm_str: str = "_",
+        sep: str = ".",
+        prefix_base: str = "auto"
+    ) -> str:
+    """
+    고유한 request_id를 생성한다.
+
+    - 기본적으로 UUID4(hex)를 사용하여 충돌 가능성이 극히 낮은 ID를 생성한다.
+    - prefix가 주어질 경우, 안전하게 정규화한 뒤 UUID 앞에 붙인다.
+    - prefix가 없거나, 정규화 결과가 무의미한 경우(prefix가 전부 제거된 경우),
+      prefix_base 값을 대신 사용한다.
+
+    반환 형식:
+    - prefix가 없는 경우      : "<uuid4hex>"
+    - prefix가 있는 경우      : "<prefix_norm><sep><uuid4hex>"
+    """
+    # 허용할 안전 문자 집합
+    # request_id는 로그, HTTP 헤더, URL, SSE 등 다양한 경로로 전달될 수 있으므로
+    # 파싱 문제를 일으킬 수 있는 문자는 사전에 차단한다.
+    safe_str_tuple = (".", "-", "_")
+    
+    # 구분자(sep)는 안전 문자만 허용
+    if sep not in safe_str_tuple:
+        raise ValueError(
+            f"sep must be one of {safe_str_tuple}"
+        )
+    # 치환 문자(norm_str)는 반드시 길이 1의 안전 문자여야 함
+    if len(norm_str) != 1 or norm_str not in safe_str_tuple:
+        raise ValueError(
+            f"norm_str must be one of {safe_str_tuple} and size must be 1"
+        )
+    
+    # UUID4 기반의 고유 request_id 생성
+    # 분산 환경에서도 충돌
+    base = uuid.uuid4().hex
+
+    # prefix가 없다면, 고유 request_id만 반환
+    if not prefix:
+        return base
+    
+    # prefix가 있다면, prefix를 sub와 합쳐서 반환
+    prefix_norm = (
+        # SAFE_REGEX에 해당하지 않는 문자 norm_str로 치환
+        FixValues.SAFE_REGEX.sub(norm_str, prefix)  
+        .strip("._-")           # 문자열 앞·뒤 의미 없는 구분자 제거
+        or prefix_base
+    )
+    return f"{prefix_norm}{sep}{base}"
+    
 
 class Flash:
     """

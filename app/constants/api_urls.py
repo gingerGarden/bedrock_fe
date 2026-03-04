@@ -115,3 +115,4 @@ class ChatAPIKeys:
     """단순 대화용 채팅 API — 일반 LLM 질의응답."""
     CHAT_WITH_META: Final[str] = f"{_BASE}/chat/web_with_meta"
     """메타데이터 기반 채팅 API — 대화 기록, 출처 정보 등 포함."""
+    STOP_STREAMING: Final[str] = f"{_BASE}/chat/stop_streaming"

@@ -8,6 +8,7 @@ import streamlit as st
 from app.api.p2_chat import streaming_response
 from app.constants.keys import SessionKey, StreamLitChatKey
 from app.constants.messages import ChatMsg
+from app.utils.utils import make_request_id
 
 from kha.schema.keys import ChatRoles
 
@@ -38,6 +39,9 @@ class Response:
         
         # 2. 정상 시작 전 초기화
         st.session_state[SessionKey.TEMP_RESPONSE] = ""
+        # 대화의 request_id 추가
+        st.session_state[SessionKey.CHAT_REQUEST_ID] = make_request_id()
+
         # payload 생성
         txt_dict = cls._convert_to_txt_dict()
         payload = cls._make_payload(txt_dict)
@@ -96,7 +100,8 @@ class Response:
         return {
             "txt":None,
             "txt_dict":txt_dict,
-            "model_name":st.session_state[SessionKey.MODEL]
+            "model_name":st.session_state[SessionKey.MODEL],
+            "request_id":st.session_state[SessionKey.CHAT_REQUEST_ID]
         }
 
     @classmethod

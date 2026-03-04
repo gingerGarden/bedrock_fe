@@ -8,6 +8,7 @@
 
 모든 상수는 직접 수정하지 않고, import 하여 참조만 하도록 한다.
 """
+import re
 from typing import Final, Tuple, List, Dict
 from app.constants.keys import UsersRecord
 
@@ -36,6 +37,8 @@ class FixValues:
     Flash로 별도 출력하는 로그가 재렌더링 과정을 몇 번까지 버틸지 내부에서 st.rerun()으로 렌더링 되는 절차를 이야기함
     새로운 데이터가 flash에 입력 시, 초기화 됨
     """
+    # 안전 문자에 대한 정규식
+    SAFE_REGEX: re.Pattern = re.compile(r"[^a-zA-Z0-9._-]+")
 
 
 # ============================================================
