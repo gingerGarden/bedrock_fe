@@ -1,7 +1,7 @@
 import streamlit as st
-from app.constants.keys import SessionKey, LoginViews
-from app.utils.session import init_session
-from app.routes.common import GoLogin, basic_ui, InitModelInfo
+from app.constants.keys import SessionKey, LoginViews, PageNum
+from app.utils.session import SessControl
+from app.routes.common import GoLogin, basic_ui
 from app.routes.p3_floragenesis import Main
 
 
@@ -15,8 +15,9 @@ basic_ui(title=None)
 # ---------------------------------------------------------
 # 2. 세션 상태 초기화
 # ---------------------------------------------------------
-init_session()          # 세션 상태 초기화 (로그인 정보)
-InitModelInfo.run()     # 모델 정보 로드
+SessControl.init()                                          # 세션 상태 초기화 (로그인 정보)
+SessControl.set_page_info(page_num=PageNum.FLORAGENESIS)    # 페이지 상태 session 저장
+SessControl.init_model_info()                               # 모델 정보 로드
 
 
 # ---------------------------------------------------------

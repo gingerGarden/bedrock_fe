@@ -12,9 +12,9 @@ KHA-Frontend 메인 진입점(Entrypoint)
 
 import streamlit as st
 
-from app.utils.session import init_session
+from app.utils.session import SessControl
 from app.constants.keys import SessionKey, LoginViews
-from app.routes.common import basic_ui, InitModelInfo
+from app.routes.common import basic_ui
 from app.constants.messages import MAIN_INTRO
 
 
@@ -41,8 +41,8 @@ st.info(MAIN_INTRO)        # 서비스 소개 텍스트
 # 전역 상태 초기화
 # ---------------------------------------------------------
 # 모든 페이지에서 공통으로 사용할 세션 정보 및 모델 정보를 초기 로드합니다.
-init_session()              # 로그인 상태, 대화 기록 등 사용자 세션 초기화
-InitModelInfo.run()         # 백엔드에서 모델 목록 및 기본 모델명 불러오기
+SessControl.init()              # 로그인 상태, 대화 기록 등 사용자 세션 초기화
+SessControl.init_model_info()
 
 # 로그인 상태에 따른 View 초기화
 if not st.session_state[SessionKey.LOGGED_IN]:

@@ -6,10 +6,10 @@
 - 관리자 전용 기능은 추후 구현 예정.
 """
 import streamlit as st
-from app.constants.keys import SessionKey, LoginViews
-from app.routes.common import GoLogin, basic_ui, InitModelInfo
-from app.routes.p9_admin import Main, NoAdmin
-from app.utils.session import init_session
+from app.constants.keys import SessionKey, LoginViews, PageNum
+from app.utils.session import SessControl
+from app.routes.common import GoLogin, basic_ui
+from app.routes.p9_0_admin import Main, NoAdmin
 
 
 
@@ -22,8 +22,9 @@ basic_ui(title=None, wide=True)
 # ---------------------------------------------------------
 # 2. 세션 상태 초기화
 # ---------------------------------------------------------
-init_session()          # 세션 상태 초기화 (로그인 정보)
-InitModelInfo.run()     # 모델 정보 로드
+SessControl.init()                                  # 세션 상태 초기화 (로그인 정보)
+SessControl.set_page_info(page_num=PageNum.ADMIN)   # 페이지 상태 session 저장
+SessControl.init_model_info()                       # 모델 정보 로드
 
 
 # ---------------------------------------------------------

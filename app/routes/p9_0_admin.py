@@ -69,6 +69,10 @@ class SideBar:
            - 승인/정지/삭제/비밀번호 변경 버튼 클릭 시 SideBarAction.* 호출
         """
         with st.sidebar:
+
+            # 0) 페이지
+            (_, v1_dev) = cls._other_page()
+            st.markdown("---")
             
             # 1) 조회
             (
@@ -93,6 +97,11 @@ class SideBar:
             st.session_state[AdminViews.KEY] = None
 
         # ========== 이벤트 처리 ==========
+        # 0) 페이지 변경
+        if v1_dev:
+            view_changer(AdminViews.V1_DEV)
+
+
         # 1) 조회
         # 전체 DB 조회: 데이터 소량 가정 → 전체 pull 후 FE에서 필터링
         if f_search:
@@ -120,6 +129,13 @@ class SideBar:
 
             
         # 현재 뷰에 따른 렌더링 (각 뷰 진입 시 선택 초기화)
+        # 개발 보조 페이지
+        # TODO - 개발 보조 페이지 개발
+        if st.session_state[AdminViews.KEY] == AdminViews.V1_DEV:
+            st.session_state[AdminUserModify.INDEX_LIST] = []
+
+
+        # table 조작 - 사용자 정보 조회를 디폴트로함
         if st.session_state[AdminViews.KEY] == AdminViews.ALL:
             st.session_state[AdminUserModify.INDEX_LIST] = []   # 조회 버튼 클릭 시, 선택 해제
             ShowTable.rendering(key=AdminViews.TABLE_ALL)
@@ -152,6 +168,28 @@ class SideBar:
         if a_delete: SideBarAction.delete()
         # 비밀번호 변경
         if pwd_converter: SideBarAction.modify_password(new_pwd=pwd)
+
+
+    # TODO - 관리자 페이지에 다양한 viewer 추가
+    @classmethod
+    def _other_page(cls):
+        st.markdown("0) 다른 페이지 이동")
+        # 회원 조회
+        v0_search = st.button(
+            "사용자 정보 조회",
+            use_container_width=True,
+            type="primary",
+            help=AdminBtns.V0_SEARCH,
+            disabled=True
+        )
+        # 개발 페이지 - 현재 session 정보 조회
+        v1_dev = st.button(
+            "개발 보조",
+            use_container_width=True,
+            help=AdminBtns.V1_DEV
+        )
+        return v0_search, v1_dev
+
 
     @classmethod
     def _find_btns(cls):

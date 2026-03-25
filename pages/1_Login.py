@@ -5,7 +5,7 @@
 ----
 - Streamlit 멀티페이지 규칙상 이 파일은 `pages/` 폴더에 위치한다.
 - 공통 레이아웃/테마는 `basic_ui()`로 설정한다.
-- 페이지 진입 시 `init_session()`과 `InitModelInfo.run()`으로 전역 상태를 초기화한다.
+- 페이지 진입 시 `Control.init()`과 `InitModelInfo.run()`으로 전역 상태를 초기화한다.
 - 로그인 여부(SessionKey.LOGGED_IN)에 따라
   - 비로그인: BeforeLogin / SignUp / ShowPersonalInfoAgree 중 하나 렌더링
   - 로그인  : AfterLogin / Edit / SoftDelete 중 하나 렌더링
@@ -13,10 +13,10 @@
   `SignUpUniqueKeys.keys_rock_init()`으로 항상 초기화하여 UI 불일치(버튼 색/메시지 잔상)를 방지한다.
 """
 import streamlit as st
-from app.constants.keys import SessionKey, LoginViews
-from app.utils.session import init_session
+from app.constants.keys import SessionKey, LoginViews, PageNum
+from app.utils.session import SessControl
 from app.utils.p1_login import SignUpUniqueKeys
-from app.routes.common import basic_ui, InitModelInfo
+from app.routes.common import basic_ui
 from app.routes.p1_login_after import AfterLogin, Edit, SoftDelete
 from app.routes.p1_login_before import (
     BeforeLogin, SignUp, ShowPersonalInfoAgree, LostPassword
@@ -36,8 +36,9 @@ basic_ui(title=None)
 #    - 세션 기본키들 미설정 시 기본값 주입
 #    - 모델 목록/기본 모델 등 1회성 메타 정보 로딩
 # ---------------------------------------------------------
-init_session()
-InitModelInfo.run()
+SessControl.init()                                  # 세션 상태 초기화 (로그인 정보)
+SessControl.set_page_info(page_num=PageNum.LOGIN)   # 페이지 상태 session 저장
+SessControl.init_model_info()                       # 모델 정보 로드
 
 
 # ---------------------------------------------------------

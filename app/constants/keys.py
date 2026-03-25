@@ -18,6 +18,7 @@
 - SignupKey         : 회원가입 시 중복 확인 상태/메시지용 키
 """
 from typing import Final
+from enum import IntEnum
 
 
 
@@ -40,7 +41,7 @@ class SessionKey:
     EMAIL: Final[str] = "email"                         # 사용자 이메일
     IS_DEVELOPER: Final[str] = "is_developer"           # 개발자 권한 여부
     IS_ADMIN: Final[str] = "is_admin"                   # 관리자 권한 여부
-    
+
     # --- 대화/스트리밍 ---
     MESSAGE: Final[str] = "message"                     # 채팅 대화 기록
     STREAMING: Final[str] = "streaming"                 # 현재 LLM 응답 스트리밍 여부
@@ -52,6 +53,59 @@ class SessionKey:
     MODEL_LIST: Final[str] = "model_list"               # 사용 가능 모델 목록
     MODEL: Final[str] = "model"                         # 현재 선택된 모델 이름
     MODEL_IDX: Final[str] = "model_number"              # 모델 목록에서 선택된 인덱스
+
+
+class PageNum(IntEnum):
+    """
+    페이지 식별을 위한 Enum 정의
+
+    - 각 페이지를 고유한 정수 값으로 식별
+    - DB 저장, API 통신 등에서 숫자 기반으로 활용 가능
+    - 코드 내에서는 의미 있는 이름으로 사용하여 가독성 및 유지보수성 향상
+    """
+    LOGIN = 1
+    KHA_CHAT = 2
+    FLORAGENESIS = 3
+    PANCDR = 4
+    KPS = 5
+    TOOLS = 7
+    DASHBOARD = 8
+    ADMIN = 9
+
+
+class PageKey:
+    """
+    페이지 상태 및 Key 관리 클래스
+
+    [역할]
+    - Streamlit 기반 웹 서비스에서 페이지 상태 관리
+    - PageNum(Enum) ↔ 실제 페이지 key(string) 매핑 관리
+
+    [구조 설명]
+    - PageNum: 논리적 페이지 식별자 (숫자 기반)
+    - P_KEY_DICT: 실제 페이지 렌더링에 사용되는 key 매핑
+    - view 단위는 페이지 하위 개념이므로 별도 관리하지 않음
+
+    [설계 의도]
+    - 페이지 식별(숫자)과 UI key(문자열)를 분리하여 관리
+    - 하드코딩된 문자열 사용을 최소화하여 유지보수성 확보
+    - 페이지 추가/변경 시 중앙에서 일괄 관리 가능
+
+    [사용 예]
+    - st.session_state[CURRENT_PAGE]를 통해 현재 페이지 상태 저장
+    - PageNum을 기준으로 페이지 분기 처리
+    """
+    CURRENT_PAGE: Final[str] = "current_page"           # 현재 페이지가 어디인지
+    P_KEY_DICT: Final[dict[PageNum, str]] = {
+        PageNum.LOGIN:"p1_login",
+        PageNum.KHA_CHAT:"p2_chat",
+        PageNum.FLORAGENESIS:"p3_floragenesis",
+        PageNum.PANCDR:"p4_pancdr",
+        PageNum.KPS:"p5_kps",
+        PageNum.TOOLS:"p7_tools",
+        PageNum.DASHBOARD:"p8_dashboard",
+        PageNum.ADMIN:"p9_admin"
+    }
 
     
 # Flash 사용을 위한 키
@@ -157,6 +211,10 @@ class SignupKey:
 # ============================================================
 class AdminViews:
     KEY: Final[str] = "admin_view"
+
+    # View - 셋
+    V0_SEARCH: Final[str] = "v0_search"
+    V1_DEV: Final[str] = "v1_dev"
 
     # View key
     ALL: Final[str] = "f_all"

@@ -12,7 +12,7 @@ from app.constants.messages import AdminMsg
 
 
 # API로부터 전달받는 단일 레코드 타입
-Record = Dict[str, Union[str, int, bool, datetime, None]]
+Record = dict[str, Union[str, int, bool, datetime, None]]
 
 
 # ==============================

@@ -15,7 +15,7 @@ from app.constants.values import Ratio
 from app.constants.pathes import PagePath
 from app.constants.keys import SessionKey, LoginViews, SignupKey
 from app.constants.messages import SOFT_DELETE
-from app.utils.session import init_session
+from app.utils.session import SessControl
 from app.utils.p1_login import (
     view_changer, input_cleaner, SignUpUniqueKeys,
     SoftDeleteAction, EditAction
@@ -68,7 +68,7 @@ class AfterLogin:
 
         if logout_btn:
             # 세션 초기화 후 로그인 전 화면으로
-            init_session(force=True)
+            SessControl.init(force=True)
             view_changer(LoginViews.LOGIN_BEFORE)
 
         if edit_btn: view_changer(LoginViews.EDIT)

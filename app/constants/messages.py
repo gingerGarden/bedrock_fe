@@ -172,6 +172,10 @@ class AdminMsg:
     
 class AdminBtns:
 
+    # --- 0. 페이지 변경 ---
+    V0_SEARCH: Final[str] = "현 플랫폼에 가입한 사용자 정보를 조회하며, 대상 사용자에 대한 조작을 할 수 있음"
+    V1_DEV: Final[str] = "플랫폼 개발을 보조하기 위한 임시 페이지"
+
     # --- 1. 조회 ---
     DB_SEARCH: Final[str] = "백엔드의 Users table을 조회하여, 관리자 페이지에서 필요로하는 모든 사용자의 정보를 가져옵니다. (사용자 규모가 커지면 추후 변경 예정)"
     SIGNUP_FILTER: Final[str] = '"DB 조회"를 통해 조회된 유저 중, 승인 대기 중인 사용자의 행만 조회합니다.'
@@ -218,6 +222,8 @@ ADMIN_ADDRESS = """
 
 # --- 메인 화면 안내문 ---
 MAIN_INTRO = f"""
+## KHA(KTR Healthcare Assistant)
+---
 ### version: alpha v0.0.1
 
 #### 1. 개요
@@ -239,8 +245,9 @@ MAIN_INTRO = f"""
 * **KHA Chat** : LLM 기반 통합 DB 질의 응답
 * **FloraGenesis** : 천연물 소재 분석 시스템 - **[구현 예정]**
 * **PANCDR** : 항암 약물 반응 예측 시스템 - **[구현 예정]**
-* **Dashboard** : 사용자 통계 및 주요 지표 시각화 - **[구현 예정]**
-* **Setting** : API Key 신청 등 계정별 설정 (개발자 전용) - **[구현 예정]**
+* **KPS** : 병리 영상 스크리닝 시스템 - **[구현 중]**
+* **Tools** : KTR 헬스케어본부의 각종 보조 도구 모음 - **[구현 중]**
+* **Dashboard** : 사용자 도구 모음 - **[구현 예정]**
 * **Admin** : 관리자 전용 사용자 관리 페이지
 
 ---

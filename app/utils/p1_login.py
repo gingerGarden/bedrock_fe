@@ -23,7 +23,7 @@ from app.constants.messages import (
     LoginSignupMsg, LoginSelfBlockMsg, LoginSelfUpdateMsg
 )
 from app.schemas.p1_login import UniqueKeys, Password, UserName
-from app.utils.session import init_session
+from app.utils.session import SessControl
 from app.utils.utils import string_space_converter
 
 
@@ -754,7 +754,7 @@ class SoftDeleteAction:
         # 결과 출력 및 세션 초기화
         if mask:
             st.info(msg)
-            init_session(force=True)
+            SessControl.init(force=True)
         else:
             st.error(msg)
 

@@ -6,9 +6,9 @@
 - 실제 채팅 UI는 app/routes/p2_chat.py의 Chat 클래스 사용.
 """
 import streamlit as st
-from app.constants.keys import SessionKey, LoginViews
-from app.utils.session import init_session
-from app.routes.common import GoLogin, basic_ui, InitModelInfo
+from app.constants.keys import SessionKey, LoginViews, PageNum
+from app.utils.session import SessControl
+from app.routes.common import GoLogin, basic_ui
 from app.routes.p2_chat import Chat
 
 
@@ -22,8 +22,9 @@ basic_ui(title=None)
 # ---------------------------------------------------------
 # 2. 세션 상태 초기화
 # ---------------------------------------------------------
-init_session()          # 세션 상태 초기화 (로그인 정보)
-InitModelInfo.run()     # 모델 정보 로드
+SessControl.init()                                      # 세션 상태 초기화 (로그인 정보)
+SessControl.set_page_info(page_num=PageNum.KHA_CHAT)    # 페이지 상태 session 저장
+SessControl.init_model_info()                           # 모델 정보 로드
 
 
 # ---------------------------------------------------------

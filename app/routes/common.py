@@ -11,9 +11,7 @@
 from typing import Optional
 
 import streamlit as st
-from app.api.p2_chat import get_available_models, get_default_model
 from app.constants.pathes import PagePath, KTR_ICON
-from app.constants.keys import SessionKey
 from app.constants.messages import NONE_LOGIN_USER
 
 
@@ -74,56 +72,3 @@ class GoLogin:
             use_container_width=True, type="primary"
         ):
             st.switch_page(PagePath.P1_LOGIN)
-
-
-
-class InitModelInfo:
-    """
-    모델 정보 초기화 관리 클래스.
-
-    앱 실행 시:
-        - 모델 목록 로드
-        - 기본 모델명 로드
-        - 기본 모델 인덱스 계산 후 세션 저장
-    """
-    @classmethod
-    def run(cls):
-        """모델 정보 초기화 전체 실행."""
-        # 모델 목록 로드
-        cls.model_list_in_session()
-        # 디폴트 모델명 로드
-        cls.default_model_in_session()
-        # 디폴트 모델명 index 로드
-        cls.default_model_idx_in_session()
-
-    @classmethod
-    def model_list_in_session(cls):
-        """세션에 모델 목록이 없으면 API 호출."""
-        # 모델 목록이 없는 경우에만 불러온다
-        if SessionKey.MODEL_LIST not in st.session_state:
-            st.session_state[SessionKey.MODEL_LIST] = get_available_models()
-
-    @classmethod
-    def default_model_in_session(cls):
-        """세션에 기본 모델명이 없으면 API 호출."""
-        # default 모델 이름이 없는 경우에만 불러온다
-        if SessionKey.MODEL not in st.session_state:
-            st.session_state[
-                SessionKey.MODEL
-            ] = get_default_model()
-
-    @classmethod
-    def default_model_idx_in_session(cls):
-        """
-        세션에 기본 모델 인덱스가 없으면 계산 후 저장.
-        - st.selectbox index 인자에 사용.
-        """
-        if SessionKey.MODEL_IDX not in st.session_state:
-            # dafault 모델 이름 index 로드
-            cls.set_model_idx()
-
-    @classmethod
-    def set_model_idx(cls):
-        """기본 모델명에 해당하는 인덱스를 세션에 저장."""
-        st.session_state[SessionKey.MODEL_IDX] = st.session_state[
-            SessionKey.MODEL_LIST].index(st.session_state[SessionKey.MODEL])

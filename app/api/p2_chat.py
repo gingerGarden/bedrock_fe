@@ -14,7 +14,6 @@ from typing import List
 
 import streamlit as st
 import requests
-import json
 
 from app.constants.api_urls import ChatAPIKeys
 from app.constants.keys import SessionKey

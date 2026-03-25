@@ -9,7 +9,7 @@ import streamlit as st
 
 from app.api.p2_chat import stop_streaming
 from app.constants.keys import SessionKey
-from app.routes.common import InitModelInfo
+from app.utils.session import InitModelInfo
 from app.utils.p2_chat import Response
 
 from kha.schema.keys import ChatRoles
@@ -39,9 +39,13 @@ class TxtBar:
         cls.show_session_messages()
 
         # 2. 현재 LLM이 응답을 생성(스트리밍)하는 중인지 확인합니다.
-        if st.session_state.get(SessionKey.STREAMING, False):
+        is_streaming = st.session_state.get(SessionKey.STREAMING, False)
+        is_interrupted = st.session_state.get(SessionKey.STOP_STREAM, False)
+
+        if is_streaming or is_interrupted:
             # a. 스트리밍 중이라면: 사용자 입력을 막고, `Response` 클래스를 통해
             #    백엔드 응답을 받아 화면에 실시간으로 표시합니다.
+            # b. stop_streaming을 받은 경우, 출력 상태에서 정지
             Response.main()
         else:
             # b. 스트리밍 중이 아니라면: 사용자 입력을 받을 준비를 합니다.
