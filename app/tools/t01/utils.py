@@ -8,7 +8,8 @@ from .config import (
     SessionKeys, View, Check, WidgetKeys, 
     EQ_KEYS, DATA_KEY, DATA_TO_WIDGET
 )
-from bedrock_tools.tools.t01_clinic_table.data import Rawdata
+
+from bedrock_tools.tools.t01_clinic_table.data import RawData
 
 
 
@@ -40,7 +41,7 @@ class Data:
             return
         
         # 데이터 조회
-        data, msg = Rawdata.get(data_input=file, data_key=data_key)
+        data, msg = RawData.get(data_input=file, data_key=data_key)
         if data is None:
             st.session_state[SessionKeys.ERROR_MESSAGE] = msg
             # 에러에 해당하는 위젯 키 세션에 저장
