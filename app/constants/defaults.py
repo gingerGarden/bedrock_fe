@@ -1,4 +1,6 @@
-from app.constants.keys import SessionKey, LoginViews, PageNum, PageKey
+from app.constants.keys import (
+    SessionKey, LoginViews, PageNum, PageKey, ToolsViews
+)
 
 
 DEFAULT_SESSION = {
@@ -20,7 +22,8 @@ DEFAULT_SESSION = {
     SessionKey.TEMP_RESPONSE: "",
 
     # View 초기화
-    LoginViews.KEY: LoginViews.LOGIN_BEFORE,
+    LoginViews.KEY: LoginViews.LOGIN_BEFORE,    # Login 화면
+    ToolsViews.KEY: ToolsViews.MAIN,            # Tools 화면
 
     # 페이지 상태
     PageKey.CURRENT_PAGE: PageKey.P_KEY_DICT[PageNum.LOGIN]

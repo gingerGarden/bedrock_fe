@@ -82,6 +82,38 @@ def make_request_id(
     return f"{prefix_norm}{sep}{base}"
     
 
+def btn_type_converter(target: bool, reverse: bool = False):
+    """
+    streamlit 버튼 타입을 결정하는 함수 (target에 따라 색 변환 목적)
+
+    Args:
+        target (bool): 기준 값 (True → primary, False → secondary)
+        reverse (bool): True일 경우 target 값을 반전시켜 적용
+
+    Returns:
+        str: "primary" 또는 "secondary"
+
+    Raises:
+        TypeError: target 또는 reverse가 bool 타입이 아닐 경우 발생
+    """
+    # target 타입 검증 (bool만 허용)
+    if not isinstance(target, bool):
+        raise TypeError(f"target must be a boolean, got {type(target).__name__}")
+
+        raise TypeError(f"target must be a boolean, got {type(target).__name__}")
+    
+    # reverse 타입 검증 (bool만 허용)
+    if not isinstance(reverse, bool):
+        raise TypeError(f"reverse must be a boolean, got {type(reverse).__name__}")
+
+    # reverse 옵션이 활성화된 경우 target 값을 반전
+    if reverse:
+        target = not target
+
+    return "primary" if target else "secondary"
+
+
+
 class Flash:
     """
     Streamlit에서 일시적인 알림 메시지(Flash Message)를 표시하는 유틸리티 클래스.

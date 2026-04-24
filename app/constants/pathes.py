@@ -20,7 +20,8 @@ class PagePath:
     
 
 
-
 # --- 리소스 파일 경로 ---
 # 페이지 아이콘(파비콘)으로 사용될 이미지 파일 경로
 KTR_ICON: Final[str] = "src/KTR-icon.ico"
+# Tools에 대한 정보들이 저장되어 있는 파일 경로
+TOOLS_JSON: Final[str] = "src/tools.json"

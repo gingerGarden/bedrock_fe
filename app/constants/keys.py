@@ -241,6 +241,17 @@ class AdminUserModify:
     DELETE_WAIT: Final[str] = "admin_delete_wait"           # Admin Table에서 dialog에서 중복 입력 방어
 
 
+
+# ============================================================
+# Tool 페이지 View 구분용 키
+# ============================================================
+class ToolsViews:
+    KEY: Final[str] = "tools_view"
+    MAIN: Final[str] = "tools_main_view"
+    BOARD: Final[str] = "tools_board_view"
+
+
+
 # ============================================================
 # Streamlit Chat 위젯용 키
 # ============================================================

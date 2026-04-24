@@ -205,7 +205,26 @@ class ChatMsg:
 
     # 대화 내용 중단
     INTERRUPT: Final[str] = "\n\n_⛔ 응답 생성이 중단되었습니다._"
-    
+
+
+
+# ============================================================
+# Tools 전용 메시지
+# ============================================================
+class ToolsMainMsg:
+
+    # --- Tools Markets ---
+    # Tools Title
+    TITLE: Final[str] = "Tools : Marketplace"
+    # Tools page 소개
+    INTRO: Final[str] = "KHA 플랫폼에서 제공하는 다양한 보조 도구들을 한눈에 확인하고 사용할 수 있습니다."
+    # 대상 Tool이 존재하지 않는 경우, 출력 문구
+    NO_TOOLS: Final[str] = "검색 결과가 없습니다"
+
+    # --- Tools Board ---
+    BOARD_TITLE: Final[str] = "Tools: 신규 개발 요청"
+    BOARD_INTRO: Final[str] = "KHA 플랫폼에 필요한 도구가 있다면 자유롭게 요청해 주세요. 관리자가 검토 후 개발 우선순위를 결정합니다."
+
 
 
 

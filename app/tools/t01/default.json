@@ -1,0 +1,4 @@
+{
+    "animal":["Mouse", "SD.Rat", "Guinea pig", "Rabbit", "Dog"],
+    "sex":["Male", "Female"]
+}

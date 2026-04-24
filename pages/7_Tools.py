@@ -15,7 +15,7 @@ basic_ui(title=None)
 # ---------------------------------------------------------
 # 2. 세션 상태 초기화
 # ---------------------------------------------------------
-SessControl.init()                                  # 세션 상태 초기화 (로그인 정보)
+SessControl.init(reset_tools=False)                 # 세션 상태 초기화 (로그인 정보)
 SessControl.set_page_info(page_num=PageNum.TOOLS)   # 페이지 상태 session 저장
 SessControl.init_model_info()                       # 모델 정보 로드
 

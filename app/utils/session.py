@@ -38,7 +38,7 @@ class SessControl:
     }
 
     @classmethod
-    def init(cls, force: bool = False) -> None:
+    def init(cls, force: bool = False, reset_tools: bool = True) -> None:
         """
         세션 상태 초기화 진입점.
 
@@ -47,9 +47,14 @@ class SessControl:
 
         Args:
             force (bool): True일 경우 현재 상태를 무시하고 강제 리셋 (로그아웃 등에서 사용).
+            reset_tools (bool): Tools 관련 세션 초기화
         """
         # 현재 세션 내 login을 위한 키가 존재하는지 여부
         mask = SessionKey.LOGGED_IN not in st.session_state
+
+        if reset_tools:
+            from app.tools import ToolSessionManager
+            ToolSessionManager.clear_all_tool_sessions()
 
         if force or mask:
             cls._init_action()
